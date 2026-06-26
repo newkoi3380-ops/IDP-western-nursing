@@ -210,7 +210,13 @@
     <div class="career-grid" id="career-grid"></div>
   </div>
   <div class="grid2">
-    <div class="field"><label class="req" id="lbl-mentor">Academic Mentor</label><input id="i-mentor" placeholder="ชื่อ Mentor" oninput="recalc()"></div>
+    <div class="field">
+      <label class="req" style="display:flex;align-items:center;gap:6px">
+        <span id="lbl-mentor">Academic Mentor</span>
+        <button class="help-btn" id="mentor-help-btn" onclick="showMentorHelp()" title="ดูคำอธิบาย Academic Mentor">?</button>
+      </label>
+      <input id="i-mentor" placeholder="ชื่อ Mentor" oninput="recalc()">
+    </div>
     <div class="field"><label>วันที่ลงนาม IDP</label><input id="i-date" type="date" oninput="recalc()"></div>
   </div>
 </div>
@@ -335,6 +341,7 @@ function switchType(t){
   document.getElementById('lbl-branch').textContent=a?'สาขาวิชา':'ฝ่าย/หน่วยงาน';
   document.getElementById('i-branch').placeholder=a?'สาขาวิชา':'ฝ่าย/หน่วยงาน';
   document.getElementById('lbl-mentor').textContent=a?'Academic Mentor':'ผู้บังคับบัญชา';
+  document.getElementById('mentor-help-btn').title=a?'ดูคำอธิบาย Academic Mentor':'ดูคำอธิบายผู้บังคับบัญชา';
   document.getElementById('i-mentor').placeholder=a?'ชื่อ Academic Mentor':'ชื่อผู้บังคับบัญชา';
   document.getElementById('lbl-s2').textContent=a?'ลงชื่อ Academic Mentor':'ลงชื่อผู้บังคับบัญชา';
   document.getElementById('lbl-s3').textContent=a?'ลงชื่อหัวหน้าสาขา':'ลงชื่อหัวหน้าสายสนับสนุน';
@@ -559,6 +566,99 @@ function showCareerHelp(){
 }
 
 function closeModal(){document.getElementById('comp-modal').classList.remove('open');}
+
+function showCareerHelp(){
+  const a = curType==='academic';
+  document.getElementById('modal-title').textContent = 'ระดับ Career Path — ' + (a ? 'สายวิชาการ' : 'สายสนับสนุน');
+  const levels = a ? [
+    {lv:1, cls:'l1', label:'ระดับ 1 — อาจารย์ใหม่', years:'ประสบการณ์ < 3 ปี',
+     detail:'อาจารย์ที่เพิ่งเริ่มต้นการทำงาน เน้นพัฒนาทักษะการสอนขั้นพื้นฐาน เรียนรู้ระบบและวัฒนธรรมองค์กร อยู่ภายใต้การดูแลของ Academic Mentor อย่างใกล้ชิด',
+     focus:'Teaching Excellence + การปรับตัวเข้ากับองค์กร'},
+    {lv:2, cls:'l2', label:'ระดับ 2 — อาจารย์ประจำ', years:'ประสบการณ์ 3–7 ปี',
+     detail:'อาจารย์ที่มีความมั่นคงในการสอน เริ่มพัฒนางานวิจัยและบริการวิชาการ สามารถทำงานได้อิสระมากขึ้น เริ่มสร้างผลงานวิชาการและเครือข่ายวิชาชีพ',
+     focus:'Research & Innovation + Teaching Excellence'},
+    {lv:3, cls:'l3', label:'ระดับ 3 — อาจารย์ชำนาญ', years:'ประสบการณ์ 7–12 ปี',
+     detail:'อาจารย์ที่มีผลงานวิจัยและวิชาการที่เข้มแข็ง สามารถเป็น Mentor ให้อาจารย์ใหม่ได้ มีบทบาทในการบริการวิชาการและพัฒนาหลักสูตร',
+     focus:'Research & Innovation + Academic Service + Leadership'},
+    {lv:4, cls:'l4', label:'ระดับ 4 — ผู้ช่วยศาสตราจารย์+', years:'ประสบการณ์ 12+ ปี',
+     detail:'อาจารย์ระดับผู้ช่วยศาสตราจารย์ขึ้นไป มีผลงานวิจัยระดับชาติ/นานาชาติ เป็นที่ยอมรับในวงวิชาชีพ สามารถนำทีมวิจัยและพัฒนาหลักสูตรใหม่',
+     focus:'Leadership + Research & Innovation'},
+    {lv:5, cls:'l5', label:'ระดับ 5 — ผู้บริหาร/ผู้เชี่ยวชาญ', years:'ระดับสูงสุด',
+     detail:'ผู้บริหารระดับสูงหรือผู้เชี่ยวชาญที่ได้รับการยอมรับในระดับชาติหรือนานาชาติ มีบทบาทในการกำหนดทิศทางองค์กรและวิชาชีพ',
+     focus:'Leadership & Management + สร้างผลกระทบเชิงนโยบาย'},
+  ] : [
+    {lv:1, cls:'l1', label:'ระดับ 1 — ปฏิบัติการ', years:'ประสบการณ์ < 3 ปี',
+     detail:'บุคลากรใหม่ที่กำลังเรียนรู้งานและระบบต่างๆ ขององค์กร ต้องการการดูแลและแนะนำอย่างสม่ำเสมอ',
+     focus:'Digital & AI + การปรับตัวเข้ากับระบบงาน'},
+    {lv:2, cls:'l2', label:'ระดับ 2 — ชำนาญการ', years:'ประสบการณ์ 3–7 ปี',
+     detail:'บุคลากรที่ทำงานได้อิสระ มีความเชี่ยวชาญในงานประจำ เริ่มพัฒนาทักษะดิจิทัลและการบริหารงาน',
+     focus:'Digital & AI + Leadership & Management'},
+    {lv:3, cls:'l3', label:'ระดับ 3 — ชำนาญการพิเศษ', years:'ประสบการณ์ 7–12 ปี',
+     detail:'บุคลากรที่มีความเชี่ยวชาญสูง สามารถเป็นพี่เลี้ยงให้เพื่อนร่วมงาน รับผิดชอบงานที่ซับซ้อน',
+     focus:'Leadership & Management + Academic Service'},
+    {lv:4, cls:'l4', label:'ระดับ 4 — เชี่ยวชาญ', years:'ประสบการณ์ 12+ ปี',
+     detail:'บุคลากรระดับผู้เชี่ยวชาญ มีบทบาทในการพัฒนาระบบและกระบวนการทำงาน สามารถนำทีมได้',
+     focus:'Leadership & Management + พัฒนาระบบองค์กร'},
+    {lv:5, cls:'l5', label:'ระดับ 5 — ผู้บริหาร/ผู้เชี่ยวชาญ', years:'ระดับสูงสุด',
+     detail:'ผู้บริหารหรือผู้เชี่ยวชาญระดับสูงสุด มีอำนาจตัดสินใจและกำหนดทิศทางการบริหารองค์กร',
+     focus:'Leadership & Management + กลยุทธ์องค์กร'},
+  ];
+  document.getElementById('modal-body').innerHTML = `
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">เลือกระดับที่ตรงกับประสบการณ์และตำแหน่งปัจจุบันของท่านมากที่สุด</p>
+    ${levels.map(l=>`
+    <div class="level-row">
+      <div class="level-badge ${l.cls}">${l.lv}</div>
+      <div class="level-text">
+        <div class="level-label">${l.label} <span style="font-weight:400;color:var(--muted);font-size:12px">(${l.years})</span></div>
+        <div style="margin-bottom:4px">${l.detail}</div>
+        <div style="font-size:12px;color:var(--navy)">🎯 เน้นพัฒนา: ${l.focus}</div>
+      </div>
+    </div>`).join('')}`;
+  document.getElementById('comp-modal').classList.add('open');
+}
+
+function showMentorHelp(){
+  const a = curType==='academic';
+  document.getElementById('modal-title').textContent = a ? 'Academic Mentor คืออะไร?' : 'ผู้บังคับบัญชา/พี่เลี้ยง คืออะไร?';
+  document.getElementById('modal-body').innerHTML = a ? `
+    <div class="comp-desc">
+      <p><strong>Academic Mentor</strong> คืออาจารย์อาวุโสหรือผู้เชี่ยวชาญที่ได้รับมอบหมายให้ดูแลและให้คำปรึกษาแก่อาจารย์ในการพัฒนาสมรรถนะวิชาชีพ</p>
+      <div class="level-row">
+        <div class="level-badge" style="background:#1E4080;font-size:16px">👤</div>
+        <div class="level-text"><div class="level-label">บทบาทของ Academic Mentor</div>
+        <div>ให้คำปรึกษาด้านการสอน วิจัย และการพัฒนาวิชาชีพ ติดตามความก้าวหน้าของ IDP ทุก 6 เดือน ให้ Feedback และสนับสนุนการเติบโตในสายอาชีพ</div></div>
+      </div>
+      <div class="level-row">
+        <div class="level-badge" style="background:#27ae60;font-size:16px">📋</div>
+        <div class="level-text"><div class="level-label">คุณสมบัติของ Academic Mentor</div>
+        <div>เป็นอาจารย์ระดับ Career Path 3 ขึ้นไป หรือดำรงตำแหน่งผู้ช่วยศาสตราจารย์ขึ้นไป มีประสบการณ์ในสาขาที่เกี่ยวข้อง และได้รับการแต่งตั้งจากหัวหน้าสาขา</div></div>
+      </div>
+      <div class="level-row">
+        <div class="level-badge" style="background:#e67e22;font-size:16px">📅</div>
+        <div class="level-text"><div class="level-label">การพบ Mentor</div>
+        <div>นัดพบอย่างน้อย 2 ครั้ง/ปี (รอบ มิ.ย. และ ธ.ค.) เพื่อทบทวน IDP และวางแผนพัฒนาในรอบถัดไป สามารถนัดพบเพิ่มเติมได้ตามความเหมาะสม</div></div>
+      </div>
+      <div class="level-row">
+        <div class="level-badge" style="background:#8e44ad;font-size:16px">✍️</div>
+        <div class="level-text"><div class="level-label">การลงนาม IDP</div>
+        <div>Academic Mentor ต้องลงนามรับรอง IDP ในส่วนที่ 5 เพื่อยืนยันว่าแผนพัฒนามีความเหมาะสมและสอดคล้องกับเป้าหมายของคณะ</div></div>
+      </div>
+    </div>` : `
+    <div class="comp-desc">
+      <p><strong>ผู้บังคับบัญชา</strong> คือหัวหน้างานหรือผู้บริหารที่รับผิดชอบดูแลบุคลากรสายสนับสนุนในการจัดทำและติดตาม IDP</p>
+      <div class="level-row">
+        <div class="level-badge" style="background:#1E4080;font-size:16px">👤</div>
+        <div class="level-text"><div class="level-label">บทบาทของผู้บังคับบัญชา</div>
+        <div>ให้คำปรึกษาด้านการพัฒนาสมรรถนะในงาน ติดตามความก้าวหน้าของ IDP ทุก 6 เดือน สนับสนุนการเข้าร่วมกิจกรรมพัฒนาตามแผน</div></div>
+      </div>
+      <div class="level-row">
+        <div class="level-badge" style="background:#27ae60;font-size:16px">📅</div>
+        <div class="level-text"><div class="level-label">การทบทวน IDP</div>
+        <div>นัดประชุมทบทวน IDP อย่างน้อย 2 ครั้ง/ปี บันทึกผลในส่วนที่ 4 และลงนามรับรองในส่วนที่ 5</div></div>
+      </div>
+    </div>`;
+  document.getElementById('comp-modal').classList.add('open');
+}
 
 function buildActs(){
   const list=compList[curType];
