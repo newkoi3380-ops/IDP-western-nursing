@@ -253,8 +253,9 @@
 </div>
 
 <div class="actions">
-  <button class="btn-main" onclick="saveJSON()">💾 บันทึก / ดาวน์โหลด JSON</button>
+  <button class="btn-main" onclick="submitToSheets()">📊 ส่งข้อมูลเข้า Google Sheets</button>
   <button class="btn-main" style="background:#27ae60" onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
+  <button class="btn-outline" onclick="saveJSON()">💾 ดาวน์โหลด JSON</button>
   <button class="btn-outline" onclick="loadExample()">👁 ดูตัวอย่างข้อมูล</button>
   <button class="btn-outline" onclick="clearAll()">🔄 ล้างข้อมูล</button>
 </div>
@@ -395,6 +396,29 @@ function saveJSON(){
   a.download=`IDP_${data.section1.name.replace(/\s+/g,'_')}_2569.json`;
   a.click(); URL.revokeObjectURL(a.href);
   toast('✅ บันทึกไฟล์เรียบร้อยแล้ว');
+}
+
+const SHEET_URL='https://script.google.com/macros/s/AKfycbw1B92sFzSswGllw3BFfWrrBWmQpToSwqpFYU3oO8tQms2fXanOz-cXENdvF2fje_kD5A/exec';
+
+function submitToSheets(){
+  const data=collect();
+  if(!data.section1.name){toast('⚠️ กรุณากรอกชื่อ-สกุลก่อนส่ง');return;}
+  if(Object.keys(data.section2.scores).length===0){toast('⚠️ กรุณาประเมินสมรรถนะอย่างน้อย 1 ข้อ');return;}
+  toast('⏳ กำลังส่งข้อมูล...');
+  const btn=document.querySelector('button[onclick="submitToSheets()"]');
+  if(btn){btn.disabled=true;btn.textContent='⏳ กำลังส่ง...';}
+  fetch(SHEET_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
+  }).then(()=>{
+    toast('✅ ส่งข้อมูลเข้า Google Sheets เรียบร้อยแล้ว!');
+    if(btn){btn.disabled=false;btn.textContent='📊 ส่งข้อมูลเข้า Google Sheets';}
+  }).catch(err=>{
+    toast('❌ เกิดข้อผิดพลาด กรุณาลองใหม่');
+    if(btn){btn.disabled=false;btn.textContent='📊 ส่งข้อมูลเข้า Google Sheets';}
+  });
 }
 
 function clearAll(){
