@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบฟอร์ม IDP — คณะพยาบาลศาสตร์ มหาวิทยาลัยเวสเทิร์น</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#1E4080;--navy-dark:#163266;--navy-light:#EBF5FB;
+    --green:#27ae60;--green-light:#E8F5E9;
+    --amber:#e67e22;--amber-light:#FFF3E0;
+    --red:#e74c3c;--border:#dde3ec;
+    --bg:#f5f7fa;--white:#ffffff;
+    --text:#1a1a2e;--muted:#6b7280;
+    --radius:10px;--radius-sm:6px;
+  }
+  body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+  .container{max-width:900px;margin:0 auto;padding:24px 20px}
+
+  /* Banner */
+  .banner{background:linear-gradient(135deg,var(--navy) 0%,#2d5fa8 100%);border-radius:14px;padding:24px 28px;margin-bottom:24px;color:#fff;position:relative;overflow:hidden}
+  .banner::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06)}
+  .banner h1{font-size:18px;font-weight:600;margin-bottom:4px}
+  .banner p{font-size:13px;color:#b8cce8;margin:0}
+  .banner .form3{display:inline-block;background:rgba(255,215,0,.2);border:1px solid rgba(255,215,0,.4);color:#ffd700;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-bottom:8px;letter-spacing:.5px}
+
+  /* Progress */
+  .progress-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px}
+  .progress-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+  .p-stat{text-align:center}
+  .p-stat .val{font-size:22px;font-weight:600;color:var(--navy)}
+  .p-stat .lbl{font-size:11px;color:var(--muted);margin-top:1px}
+  .prog-track{height:8px;background:#e8edf5;border-radius:4px;overflow:hidden}
+  .prog-fill{height:100%;border-radius:4px;background:var(--navy);transition:.4s ease;width:0%}
+
+  /* Type tabs */
+  .tabs{display:flex;gap:8px;margin-bottom:20px}
+  .tab{padding:10px 20px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;background:var(--white);color:var(--muted);transition:.15s;font-weight:500}
+  .tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  /* Section cards */
+  .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:16px}
+  .sec-head{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid var(--navy-light)}
+  .sec-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .sec-title{font-size:15px;font-weight:600;color:var(--navy)}
+
+  /* Fields */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .field input,.field select,.field textarea{
+    width:100%;padding:9px 12px;border:1.5px solid var(--border);
+    border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;
+    background:var(--white);color:var(--text);outline:none;transition:.15s
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--navy);background:#fafcff}
+  .field textarea{resize:vertical;min-height:64px}
+  .req::after{content:' *';color:var(--red)}
+
+  /* Career */
+  .career-grid{display:flex;gap:8px;flex-wrap:wrap}
+  .c-opt{padding:7px 14px;border:1.5px solid var(--border);border-radius:20px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif;background:var(--white);color:var(--muted);transition:.15s;font-weight:500}
+  .c-opt.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  /* Competency table */
+  .comp-wrap{overflow-x:auto}
+  .comp-tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:580px}
+  .comp-tbl th{background:var(--navy);color:#fff;padding:9px 10px;font-weight:600;text-align:center;font-family:'Sarabun',sans-serif}
+  .comp-tbl th:first-child{text-align:left;width:40%}
+  .comp-tbl td{padding:8px 10px;border-bottom:1px solid #eef1f7;vertical-align:middle}
+  .comp-tbl tr:nth-child(even) td{background:#f8fafd}
+  .dots{display:flex;gap:5px;justify-content:center}
+  .dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);cursor:pointer;transition:.15s;background:var(--white)}
+  .dot:hover{border-color:var(--navy);background:var(--navy-light)}
+  .dot.on{background:var(--navy);border-color:var(--navy)}
+  .na-cell{color:var(--muted);font-size:12px;text-align:center;font-style:italic}
+  .goal-in{width:48px;padding:5px 6px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;text-align:center;font-family:'Sarabun',sans-serif;background:var(--white)}
+  .goal-in:focus{outline:none;border-color:var(--green)}
+  .score-chip{display:inline-block;background:var(--navy-light);color:var(--navy);font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-left:6px}
+
+  /* Activity cards */
+  .act-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;background:var(--bg);position:relative;transition:.15s}
+  .act-card:hover{border-color:#b3c6e0}
+  .act-num{position:absolute;top:-1px;left:-1px;background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--radius) 0 var(--radius-sm) 0}
+  .rm-btn{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:16px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:.15s}
+  .rm-btn:hover{background:#fef2f2;border-color:var(--red);color:var(--red)}
+  .method-row{display:flex;gap:6px;flex-wrap:wrap}
+  .m-btn{padding:6px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-family:'Sarabun',sans-serif;cursor:pointer;background:var(--white);color:var(--muted);transition:.15s;font-weight:500}
+  .m-btn.m70.on{background:var(--green-light);border-color:var(--green);color:#1a6b3c}
+  .m-btn.m20.on{background:var(--navy-light);border-color:var(--navy);color:var(--navy)}
+  .m-btn.m10.on{background:var(--amber-light);border-color:var(--amber);color:#7a4400}
+
+  /* Add activity */
+  .add-act{width:100%;padding:12px;border:2px dashed var(--border);border-radius:var(--radius);font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;background:transparent;color:var(--muted);transition:.15s;margin-top:4px}
+  .add-act:hover{border-color:var(--navy);color:var(--navy);background:var(--navy-light)}
+
+  /* Budget total */
+  .budget-bar{display:flex;justify-content:space-between;align-items:center;background:var(--navy-light);border:1px solid #b3d4ef;border-radius:var(--radius-sm);padding:12px 16px;margin-top:12px;font-size:14px}
+  .budget-bar strong{font-size:17px;color:var(--navy);font-weight:600}
+
+  /* Follow table */
+  .follow-tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .follow-tbl th{background:var(--navy);color:#fff;padding:8px 12px;font-weight:600;font-family:'Sarabun',sans-serif;text-align:left}
+  .follow-tbl td{padding:8px 12px;border-bottom:1px solid #eef1f7;vertical-align:top}
+  .follow-tbl td:first-child{background:#f0f4fb;font-weight:600;color:var(--navy);font-size:13px;white-space:nowrap;width:110px}
+  .follow-tbl textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;font-size:13px;font-family:'Sarabun',sans-serif;resize:vertical;min-height:60px;background:var(--white);color:var(--text)}
+  .follow-tbl textarea:focus{outline:none;border-color:var(--navy)}
+
+  /* Sig */
+  .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .sig-cell{border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;background:#fafcff}
+  .sig-cell label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px}
+  .sig-cell input{width:100%;border:none;border-bottom:1.5px solid var(--border);padding:4px 0;font-size:14px;font-family:'Sarabun',sans-serif;background:transparent;color:var(--text);outline:none}
+  .sig-cell input:focus{border-color:var(--navy)}
+
+  /* Actions */
+  .actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+  .btn-main{padding:11px 22px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:7px}
+  .btn-main:hover{background:var(--navy-dark)}
+  .btn-outline{padding:11px 22px;background:var(--white);color:var(--text);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:7px}
+  .btn-outline:hover{border-color:var(--navy);color:var(--navy);background:var(--navy-light)}
+
+  /* Toast */
+  .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 22px;border-radius:var(--radius);font-size:14px;font-family:'Sarabun',sans-serif;box-shadow:0 4px 20px rgba(30,64,128,.25);opacity:0;transition:.3s;pointer-events:none;z-index:9999;white-space:nowrap}
+  .toast.show{opacity:1}
+
+  /* Required msg */
+  .err-msg{color:var(--red);font-size:12px;margin-top:4px;display:none}
+  .field.err input,.field.err textarea,.field.err select{border-color:var(--red)}
+  .field.err .err-msg{display:block}
+
+  @media(max-width:640px){
+    .grid2,.grid3,.sig-grid{grid-template-columns:1fr}
+    .progress-stats{grid-template-columns:repeat(2,1fr)}
+    .tabs{flex-wrap:wrap}
+  }
+  @media print{
+    body{background:#fff}
+    .actions,.tabs,.progress-wrap{display:none}
+    .card{break-inside:avoid;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="banner">
+  <div class="form3">แบบฟอร์มที่ 3</div>
+  <h1>แบบแผนพัฒนาบุคลากรรายบุคคล (Individual Development Plan: IDP)</h1>
+  <p>คณะพยาบาลศาสตร์ มหาวิทยาลัยเวสเทิร์น วิทยาเขตบุรีรัมย์ — ปีงบประมาณ 2569</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchType('academic')">📚 สายวิชาการ</button>
+  <button class="tab" onclick="switchType('support')">🏢 สายสนับสนุน</button>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-stats">
+    <div class="p-stat"><div class="val" id="p-pct">0%</div><div class="lbl">ความครบถ้วน</div></div>
+    <div class="p-stat"><div class="val" id="p-acts">0</div><div class="lbl">กิจกรรมพัฒนา</div></div>
+    <div class="p-stat"><div class="val" id="p-comp">0/5</div><div class="lbl">สมรรถนะประเมิน</div></div>
+    <div class="p-stat"><div class="val" id="p-budget">0</div><div class="lbl">งบรวม (บาท)</div></div>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+</div>
+
+<!-- Section 1 -->
+<div class="card">
+  <div class="sec-head"><div class="sec-num">1</div><div class="sec-title">ข้อมูลส่วนตัว</div></div>
+  <div class="grid2">
+    <div class="field"><label class="req">ชื่อ-สกุล</label><input id="i-name" placeholder="ชื่อ-นามสกุล" oninput="recalc()"><div class="err-msg">กรุณากรอกชื่อ-สกุล</div></div>
+    <div class="field"><label class="req" id="lbl-pos">ตำแหน่ง</label><input id="i-pos" placeholder="ตำแหน่ง" oninput="recalc()"></div>
+  </div>
+  <div class="grid2">
+    <div class="field"><label class="req" id="lbl-branch">สาขาวิชา</label><input id="i-branch" placeholder="สาขาวิชา" oninput="recalc()"></div>
+    <div class="field"><label>ปีที่จัดทำ IDP</label><input id="i-year" value="2569" oninput="recalc()"></div>
+  </div>
+  <div class="field" style="margin-bottom:14px">
+    <label class="req">ระดับ Career Path</label>
+    <div class="career-grid" id="career-grid"></div>
+  </div>
+  <div class="grid2">
+    <div class="field"><label class="req" id="lbl-mentor">Academic Mentor</label><input id="i-mentor" placeholder="ชื่อ Mentor" oninput="recalc()"></div>
+    <div class="field"><label>วันที่ลงนาม IDP</label><input id="i-date" type="date" oninput="recalc()"></div>
+  </div>
+</div>
+
+<!-- Section 2 -->
+<div class="card">
+  <div class="sec-head"><div class="sec-num">2</div><div class="sec-title">ประเมินสมรรถนะปัจจุบัน</div></div>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:14px">คลิก ● เลือกระดับปัจจุบัน (1–5) และกรอกเป้าหมายปลายปีในช่องขวา<br>
+  <strong style="color:#1B5E20">1</strong>=ต้องพัฒนา &nbsp; <strong style="color:#1565C0">2</strong>=พอใช้ &nbsp; <strong style="color:#1a6b3c">3</strong>=ดี &nbsp; <strong style="color:#E65100">4</strong>=ดีมาก &nbsp; <strong style="color:#6A1B9A">5</strong>=เชี่ยวชาญ</p>
+  <div class="comp-wrap">
+    <table class="comp-tbl"><thead><tr>
+      <th style="text-align:left">สมรรถนะหลัก</th>
+      <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+      <th>เป้าหมาย</th>
+    </tr></thead>
+    <tbody id="comp-body"></tbody></table>
+  </div>
+</div>
+
+<!-- Section 3 -->
+<div class="card">
+  <div class="sec-head"><div class="sec-num">3</div><div class="sec-title">แผนพัฒนาสมรรถนะ (70-20-10)</div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+    <span style="background:var(--green-light);color:#1a6b3c;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">70% เรียนรู้จากงานจริง</span>
+    <span style="background:var(--navy-light);color:var(--navy);padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">20% เรียนรู้จากคนอื่น</span>
+    <span style="background:var(--amber-light);color:#7a4400;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">10% อบรม/สัมมนา</span>
+  </div>
+  <div id="act-list"></div>
+  <button class="add-act" onclick="addAct()">+ เพิ่มกิจกรรมพัฒนา</button>
+  <div class="budget-bar"><span>รวมงบประมาณทั้งสิ้น</span><strong id="budget-tot">0 บาท</strong></div>
+</div>
+
+<!-- Section 4 -->
+<div class="card">
+  <div class="sec-head"><div class="sec-num">4</div><div class="sec-title">การติดตามความก้าวหน้า (ทบทวนทุก 6 เดือน)</div></div>
+  <table class="follow-tbl" style="margin-bottom:12px">
+    <thead><tr><th>รอบ</th><th>ผลการดำเนินงาน</th><th>ปัญหาอุปสรรค</th><th>แผนแก้ไข</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>รอบที่ 1<br><small>(มิ.ย. 69)</small></td>
+        <td><textarea id="f-r1a" placeholder="ผลการดำเนินงาน..."></textarea></td>
+        <td><textarea id="f-r1b" placeholder="ปัญหาที่พบ..."></textarea></td>
+        <td><textarea id="f-r1c" placeholder="แนวทางแก้ไข..."></textarea></td>
+      </tr>
+      <tr>
+        <td>รอบที่ 2<br><small>(ธ.ค. 69)</small></td>
+        <td><textarea id="f-r2a" placeholder="ผลการดำเนินงาน..."></textarea></td>
+        <td><textarea id="f-r2b" placeholder="ปัญหาที่พบ..."></textarea></td>
+        <td><textarea id="f-r2c" placeholder="แนวทางแก้ไข..."></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="field"><label>สรุปภาพรวมปี</label><textarea id="f-summary" placeholder="สรุปผลการพัฒนาตลอดปีงบประมาณ..." style="min-height:72px"></textarea></div>
+</div>
+
+<!-- Section 5 -->
+<div class="card">
+  <div class="sec-head"><div class="sec-num">5</div><div class="sec-title">การรับรอง</div></div>
+  <div class="sig-grid">
+    <div class="sig-cell"><label>ลงชื่อบุคลากร</label><input id="s1" placeholder="พิมพ์ชื่อ-สกุล"></div>
+    <div class="sig-cell"><label id="lbl-s2">ลงชื่อ Academic Mentor</label><input id="s2" placeholder="พิมพ์ชื่อ-สกุล"></div>
+    <div class="sig-cell"><label id="lbl-s3">ลงชื่อหัวหน้าสาขา</label><input id="s3" placeholder="พิมพ์ชื่อ-สกุล"></div>
+    <div class="sig-cell"><label id="lbl-s4">ลงชื่อรองคณบดีวิชาการ</label><input id="s4" placeholder="พิมพ์ชื่อ-สกุล"></div>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn-main" onclick="saveJSON()">💾 บันทึก / ดาวน์โหลด JSON</button>
+  <button class="btn-main" style="background:#27ae60" onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
+  <button class="btn-outline" onclick="loadExample()">👁 ดูตัวอย่างข้อมูล</button>
+  <button class="btn-outline" onclick="clearAll()">🔄 ล้างข้อมูล</button>
+</div>
+
+</div><!-- /container -->
+<div class="toast" id="toast"></div>
+
+<script>
+let curType='academic', careerLv=1, acts=[], scores={}, targets={};
+
+const careerOpts={
+  academic:['ระดับ 1 — อาจารย์ใหม่','ระดับ 2 — อาจารย์ประจำ','ระดับ 3 — อาจารย์ชำนาญ','ระดับ 4 — ผู้ช่วยศาสตราจารย์+','ระดับ 5 — ผู้บริหาร/ผู้เชี่ยวชาญ'],
+  support:['ระดับ 1 — ปฏิบัติการ','ระดับ 2 — ชำนาญการ','ระดับ 3 — ชำนาญการพิเศษ','ระดับ 4 — เชี่ยวชาญ','ระดับ 5 — ผู้บริหาร/ผู้เชี่ยวชาญ']
+};
+const compList={
+  academic:[
+    {id:'C1',name:'Teaching Excellence',sub:'อาจารย์มืออาชีพ'},
+    {id:'C2',name:'Research & Innovation',sub:'นักวิจัย'},
+    {id:'C3',name:'Academic Service',sub:'บริการวิชาการ'},
+    {id:'C4',name:'Digital & AI Competency',sub:'ดิจิทัล'},
+    {id:'C5',name:'Leadership & Management',sub:'ผู้นำ'},
+  ],
+  support:[
+    {id:'C1',name:'Teaching Support',sub:'N/A — ไม่เกี่ยวข้อง',na:true},
+    {id:'C2',name:'Research Support',sub:'สนับสนุนงานวิจัย'},
+    {id:'C3',name:'Academic Service',sub:'สนับสนุนบริการวิชาการ'},
+    {id:'C4',name:'Digital & AI Competency',sub:'ดิจิทัล'},
+    {id:'C5',name:'Leadership & Management',sub:'บริหารงานธุรการ'},
+  ]
+};
+
+function switchType(t){
+  curType=t;
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===(t==='academic'?0:1)));
+  const a=t==='academic';
+  document.getElementById('lbl-pos').textContent=a?'ตำแหน่ง':'ตำแหน่ง';
+  document.getElementById('lbl-branch').textContent=a?'สาขาวิชา':'ฝ่าย/หน่วยงาน';
+  document.getElementById('i-branch').placeholder=a?'สาขาวิชา':'ฝ่าย/หน่วยงาน';
+  document.getElementById('lbl-mentor').textContent=a?'Academic Mentor':'ผู้บังคับบัญชา';
+  document.getElementById('i-mentor').placeholder=a?'ชื่อ Academic Mentor':'ชื่อผู้บังคับบัญชา';
+  document.getElementById('lbl-s2').textContent=a?'ลงชื่อ Academic Mentor':'ลงชื่อผู้บังคับบัญชา';
+  document.getElementById('lbl-s3').textContent=a?'ลงชื่อหัวหน้าสาขา':'ลงชื่อหัวหน้าสายสนับสนุน';
+  document.getElementById('lbl-s4').textContent=a?'ลงชื่อรองคณบดีวิชาการ':'ลงชื่อรองคณบดีฝ่ายแผนฯ';
+  buildCareer(); buildComp(); buildActs(); recalc();
+}
+
+function buildCareer(){
+  document.getElementById('career-grid').innerHTML=careerOpts[curType].map((o,i)=>
+    `<button class="c-opt${careerLv===i+1?' on':''}" onclick="pickCareer(${i+1})">${o}</button>`).join('');
+}
+function pickCareer(n){careerLv=n;buildCareer();recalc();}
+
+function buildComp(){
+  const list=compList[curType];
+  document.getElementById('comp-body').innerHTML=list.map(c=>{
+    if(c.na) return `<tr><td><strong style="color:var(--navy)">${c.id}</strong> — ${c.name} <span style="font-size:11px;color:var(--muted)">${c.sub}</span></td><td colspan="5" class="na-cell">ไม่เกี่ยวข้อง (N/A)</td><td><input class="goal-in" value="N/A" disabled></td></tr>`;
+    const sc=scores[c.id]||0;
+    const tgt=targets[c.id]||'';
+    const dotsCols=[1,2,3,4,5].map(i=>`<td><div class="dots"><div class="dot${sc===i?' on':''}" onclick="setScore('${c.id}',${i})" title="ระดับ ${i}"></div></div></td>`).join('');
+    return `<tr><td><strong style="color:var(--navy)">${c.id}</strong> — ${c.name} <span style="font-size:11px;color:var(--muted)">${c.sub}</span>${sc?`<span class="score-chip">ระดับ ${sc}</span>`:''}</td>${dotsCols}<td><input class="goal-in" value="${tgt}" placeholder="?" onchange="setTarget('${c.id}',this.value)"></td></tr>`;
+  }).join('');
+}
+function setScore(id,n){scores[id]=n;buildComp();recalc();}
+function setTarget(id,v){targets[id]=v;recalc();}
+
+function buildActs(){
+  const list=compList[curType];
+  document.getElementById('act-list').innerHTML=acts.map((a,idx)=>`
+    <div class="act-card">
+      <span class="act-num">กิจกรรม ${idx+1}</span>
+      <button class="rm-btn" onclick="removeAct(${a.id})" title="ลบ">×</button>
+      <div style="margin-top:20px">
+        <div class="grid3" style="margin-bottom:10px">
+          <div class="field"><label>สมรรถนะที่พัฒนา</label>
+            <select onchange="updAct(${a.id},'comp',this.value)">
+              ${list.map(c=>`<option value="${c.id}"${a.comp===c.id?' selected':''}>${c.id} — ${c.name}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><label>ระยะเวลา</label><input value="${a.period}" placeholder="เช่น ก.พ.–ก.ย. 69" onchange="updAct(${a.id},'period',this.value)"></div>
+          <div class="field"><label>งบประมาณ (บาท)</label><input value="${a.budget}" placeholder="0 = ไม่ใช้งบ" onchange="updAct(${a.id},'budget',this.value)" oninput="recalc()"></div>
+        </div>
+        <div class="field" style="margin-bottom:10px"><label>กิจกรรมพัฒนา</label><textarea placeholder="อธิบายกิจกรรมที่จะดำเนินการ..." onchange="updAct(${a.id},'act',this.value)">${a.act}</textarea></div>
+        <div class="grid2">
+          <div class="field"><label>วิธีการ (เลือก 1 วิธี)</label>
+            <div class="method-row">
+              <button class="m-btn m70${a.method==='70'?' on':''}" onclick="updAct(${a.id},'method','70');buildActs()">70% งานจริง</button>
+              <button class="m-btn m20${a.method==='20'?' on':''}" onclick="updAct(${a.id},'method','20');buildActs()">20% จากคนอื่น</button>
+              <button class="m-btn m10${a.method==='10'?' on':''}" onclick="updAct(${a.id},'method','10');buildActs()">10% อบรม</button>
+            </div>
+          </div>
+          <div class="field"><label>ตัวชี้วัดความสำเร็จ (KPI)</label><input value="${a.kpi}" placeholder="วัดผลอย่างไร..." onchange="updAct(${a.id},'kpi',this.value)"></div>
+        </div>
+      </div>
+    </div>`).join('');
+  document.getElementById('budget-tot').textContent=calcBudget().toLocaleString()+' บาท';
+}
+
+let _id=1;
+function addAct(){acts.push({id:_id++,comp:'C1',act:'',method:'70',period:'',kpi:'',budget:''});buildActs();recalc();}
+function removeAct(id){acts=acts.filter(a=>a.id!==id);buildActs();recalc();}
+function updAct(id,k,v){const a=acts.find(x=>x.id===id);if(a)a[k]=v;recalc();}
+function calcBudget(){return acts.reduce((s,a)=>{const n=parseFloat((a.budget||'').replace(/,/g,''));return s+(isNaN(n)?0:n);},0);}
+
+function recalc(){
+  const req=['i-name','i-pos','i-branch','i-mentor'];
+  const filled=req.filter(id=>document.getElementById(id)?.value.trim()).length;
+  const cFilled=Object.values(scores).filter(v=>v>0).length;
+  const total=req.length+5+1;
+  const done=filled+cFilled+(acts.length>0?1:0);
+  const pct=Math.round(Math.min(done/total*100,100));
+  document.getElementById('p-pct').textContent=pct+'%';
+  document.getElementById('p-acts').textContent=acts.length;
+  document.getElementById('p-comp').textContent=cFilled+'/5';
+  document.getElementById('p-budget').textContent=calcBudget().toLocaleString();
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('budget-tot').textContent=calcBudget().toLocaleString()+' บาท';
+}
+
+function collect(){
+  return {
+    formVersion:'IDP-2569-v1',
+    type:curType,
+    section1:{name:document.getElementById('i-name').value,position:document.getElementById('i-pos').value,branch:document.getElementById('i-branch').value,year:document.getElementById('i-year').value,careerLevel:careerLv,mentor:document.getElementById('i-mentor').value,signDate:document.getElementById('i-date').value},
+    section2:{scores:{...scores},targets:{...targets}},
+    section3:acts.map(a=>({...a})),
+    section4:{r1:{result:document.getElementById('f-r1a').value,problem:document.getElementById('f-r1b').value,fix:document.getElementById('f-r1c').value},r2:{result:document.getElementById('f-r2a').value,problem:document.getElementById('f-r2b').value,fix:document.getElementById('f-r2c').value},summary:document.getElementById('f-summary').value},
+    section5:{sig1:document.getElementById('s1').value,sig2:document.getElementById('s2').value,sig3:document.getElementById('s3').value,sig4:document.getElementById('s4').value},
+    budgetTotal:calcBudget(),savedAt:new Date().toISOString()
+  };
+}
+
+function saveJSON(){
+  const data=collect();
+  if(!data.section1.name){toast('⚠️ กรุณากรอกชื่อ-สกุลก่อนบันทึก');return;}
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`IDP_${data.section1.name.replace(/\s+/g,'_')}_2569.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('✅ บันทึกไฟล์เรียบร้อยแล้ว');
+}
+
+function clearAll(){
+  if(!confirm('ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?'))return;
+  ['i-name','i-pos','i-branch','i-mentor','s1','s2','s3','s4','f-r1a','f-r1b','f-r1c','f-r2a','f-r2b','f-r2c','f-summary'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('i-year').value='2569';
+  document.getElementById('i-date').value='';
+  scores={};targets={};acts=[];careerLv=1;
+  buildCareer();buildComp();buildActs();recalc();
+  toast('🔄 ล้างข้อมูลเรียบร้อยแล้ว');
+}
+
+function loadExample(){
+  const a=curType==='academic';
+  document.getElementById('i-name').value=a?'อาจารย์ ดร.สุภาพร  รักษ์เด็ก':'นางสาวมณีรัตน์  จัดการดี';
+  document.getElementById('i-pos').value=a?'อาจารย์ประจำ':'เจ้าหน้าที่บริหารงานทั่วไป';
+  document.getElementById('i-branch').value=a?'การพยาบาลเด็กและวัยรุ่น':'งานบริหารและธุรการ';
+  document.getElementById('i-mentor').value=a?'รศ.ดร.นภาพร  วิจิตรพยาบาล':'หัวหน้างานบริหารและธุรการ';
+  document.getElementById('s1').value=a?'อาจารย์ ดร.สุภาพร  รักษ์เด็ก':'นางสาวมณีรัตน์  จัดการดี';
+  document.getElementById('s2').value=a?'รศ.ดร.นภาพร  วิจิตรพยาบาล':'หัวหน้างานบริหารและธุรการ';
+  document.getElementById('f-r1a').value=a?'- ส่งบทความวิจัยแล้ว รอ Review\n- เข้า Writing Retreat สำเร็จ\n- FP Log ครบ 6 ครั้ง':'- ผ่านอบรม AI for HR แล้ว\n- เข้า Digital CoP ครบ 5 ครั้ง';
+  document.getElementById('f-r1b').value=a?'- ภาระสอนมาก เวลาเขียนบทความน้อย':'- ระบบ NRMS มีปัญหา Login';
+  document.getElementById('f-r1c').value=a?'- ขอ Study Leave 3 วัน':'- แจ้ง IT แก้ไขระบบ';
+  careerLv=2; scores=a?{C1:3,C2:2,C3:4,C4:2,C5:2}:{C1:0,C2:2,C3:3,C4:2,C5:2};
+  targets=a?{C1:'4',C2:'3',C3:'4',C4:'3',C5:'3'}:{C1:'N/A',C2:'3',C3:'4',C4:'3',C5:'3'};
+  acts=a?[
+    {id:_id++,comp:'C1',act:'สอนรายวิชาการพยาบาลเด็กวิกฤต (ใหม่) ร่วมกับอาจารย์อาวุโส',method:'70',period:'ก.พ.–ก.ย. 69',kpi:'ผ่านการประเมินนิสิต ≥ 4.0/5',budget:''},
+    {id:_id++,comp:'C1',act:'เข้ารับการประเมิน TPSF ระดับ 1 จากสภาการพยาบาล',method:'10',period:'มี.ค.–ก.ย. 69',kpi:'ได้รับ Certificate TPSF ระดับ 1',budget:'3000'},
+    {id:_id++,comp:'C2',act:'เขียนบทความวิจัย TCI Q1 ร่วมกับ Mentor (Co-author)',method:'70',period:'ต.ค. 68–มี.ค. 69',kpi:'ส่งบทความ ≥ 1 เรื่อง',budget:'5000'},
+    {id:_id++,comp:'C4',act:'อบรม AI for Pediatric Nursing Education แล้วนำไปใช้ใน 1 วิชา',method:'10',period:'พ.ย. 68–ม.ค. 69',kpi:'Certificate + ใช้ AI Tool ใน 1 วิชา',budget:'1500'},
+  ]:[
+    {id:_id++,comp:'C4',act:'อบรม AI for HR และระบบ e-Filing',method:'10',period:'ก.พ.–เม.ย. 69',kpi:'Certificate + ใช้งานจริงใน 30 วัน',budget:'2500'},
+    {id:_id++,comp:'C5',act:"อบรม 'การบริหารงานธุรการมืออาชีพ'",method:'10',period:'มิ.ย. 69',kpi:'Certificate + Action Plan',budget:'3500'},
+    {id:_id++,comp:'C3',act:'ประสานงานโครงการบริการวิชาการ ≥ 1 โครงการ',method:'70',period:'ม.ค.–ส.ค. 69',kpi:'เอกสารโครงการครบถ้วน',budget:''},
+  ];
+  buildCareer();buildComp();buildActs();recalc();
+  toast('✅ โหลดตัวอย่างเรียบร้อยแล้ว');
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+buildCareer(); buildComp(); buildActs(); recalc();
+</script>
+</body>
+</html>
