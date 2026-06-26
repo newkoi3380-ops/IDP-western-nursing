@@ -204,7 +204,9 @@
     <div class="field"><label>ปีที่จัดทำ IDP</label><input id="i-year" value="2569" oninput="recalc()"></div>
   </div>
   <div class="field" style="margin-bottom:14px">
-    <label class="req">ระดับ Career Path</label>
+    <label class="req" style="display:flex;align-items:center;gap:6px">ระดับ Career Path
+      <button class="help-btn" onclick="showCareerHelp()" title="ดูคำอธิบายระดับ Career Path">?</button>
+    </label>
     <div class="career-grid" id="career-grid"></div>
   </div>
   <div class="grid2">
@@ -274,7 +276,7 @@
     <div class="sig-cell"><label id="lbl-s4">ลงชื่อรองคณบดีวิชาการ</label><input id="s4" placeholder="พิมพ์ชื่อ-สกุล"></div>
   </div>
     <div class="sig-grid" style="margin-top:12px;grid-template-columns:1fr">
-    <div class="sig-cell" style="max-width:320px"><label>ลงชื่อรองคณบดี</label><input id="s5" placeholder="พิมพ์ชื่อ-สกุล"></div>
+    <div class="sig-cell" style="max-width:320px"><label>ลงชื่อคณบดี</label><input id="s5" placeholder="พิมพ์ชื่อ-สกุล"></div>
   </div>
 </div>
 
@@ -487,6 +489,75 @@ function showComp(id){
     </div>`;
   document.getElementById('comp-modal').classList.add('open');
 }
+const careerDesc={
+  academic:[
+    {lv:1,label:'ระดับ 1 — อาจารย์ใหม่',years:'ประสบการณ์ < 3 ปี',color:'l1',
+     detail:'อาจารย์ที่เพิ่งเริ่มปฏิบัติงาน มุ่งเรียนรู้งานสอน งานวิจัย และระบบมหาวิทยาลัย ต้องการ Mentor ดูแลอย่างใกล้ชิด',
+     focus:'Teaching Excellence, Digital & AI',
+     kpi:'ผ่านการประเมินนิสิต ≥ 3.5 | เริ่มโครงการวิจัยชิ้นแรก'},
+    {lv:2,label:'ระดับ 2 — อาจารย์ประจำ',years:'ประสบการณ์ 3–7 ปี',color:'l2',
+     detail:'อาจารย์ที่มีความมั่นคงในงานสอน เริ่มสร้างผลงานวิจัยและบริการวิชาการของตนเอง พัฒนาทักษะดิจิทัล',
+     focus:'Research & Innovation, Academic Service',
+     kpi:'ตีพิมพ์บทความ TCI ≥ 1 เรื่อง/ปี | FP Log ≥ 12 ครั้ง/ปี'},
+    {lv:3,label:'ระดับ 3 — อาจารย์ชำนาญ',years:'ประสบการณ์ 7–12 ปี',color:'l3',
+     detail:'อาจารย์ที่มีความเชี่ยวชาญด้านการสอนและวิจัย เริ่มพัฒนาภาวะผู้นำ ดูแล Mentee และริเริ่มโครงการระดับคณะ',
+     focus:'Leadership & Management, Research & Innovation',
+     kpi:'ตีพิมพ์นานาชาติ ≥ 1 เรื่อง/ปี | รับผิดชอบโครงการระดับคณะ'},
+    {lv:4,label:'ระดับ 4 — ผู้ช่วยศาสตราจารย์+',years:'ประสบการณ์ 12+ ปี',color:'l4',
+     detail:'อาจารย์ที่ดำรงตำแหน่งทางวิชาการ มีผลงานวิจัยสม่ำเสมอ เป็นผู้นำด้านวิชาการและพัฒนาศักยภาพทีม',
+     focus:'Leadership, Research & Innovation, Academic Service',
+     kpi:'ผลงานวิจัย/นวัตกรรม ≥ 2 เรื่อง/ปี | นำทีมหรือรับผิดชอบสาขา'},
+    {lv:5,label:'ระดับ 5 — ผู้บริหาร/ผู้เชี่ยวชาญ',years:'ระดับสูงสุด',color:'l5',
+     detail:'ผู้บริหารหรือผู้เชี่ยวชาญระดับชาติ วางนโยบายเชิงกลยุทธ์ สร้างชื่อเสียงให้คณะและมหาวิทยาลัยในระดับนานาชาติ',
+     focus:'Leadership & Management ทุกมิติ',
+     kpi:'สร้างผลกระทบระดับชาติ/นานาชาติ | พัฒนาองค์กรอย่างยั่งยืน'},
+  ],
+  support:[
+    {lv:1,label:'ระดับ 1 — ปฏิบัติการ',years:'ประสบการณ์ < 3 ปี',color:'l1',
+     detail:'บุคลากรที่เพิ่งเริ่มปฏิบัติงาน เรียนรู้ระบบและกระบวนการทำงาน ต้องการการดูแลและแนะนำอย่างใกล้ชิด',
+     focus:'Digital & AI, ทักษะพื้นฐานในสายงาน',
+     kpi:'ปฏิบัติงานได้ตามมาตรฐาน | เรียนรู้ระบบดิจิทัลที่ใช้ในงาน'},
+    {lv:2,label:'ระดับ 2 — ชำนาญการ',years:'ประสบการณ์ 3–7 ปี',color:'l2',
+     detail:'บุคลากรที่ทำงานได้อย่างอิสระ มีความชำนาญในงานหลัก เริ่มพัฒนาทักษะดิจิทัลและการบริหารจัดการ',
+     focus:'Digital & AI, Leadership & Management',
+     kpi:'จัดการงานได้อิสระโดยไม่มีข้อผิดพลาด | ใช้ระบบดิจิทัลได้คล่อง'},
+    {lv:3,label:'ระดับ 3 — ชำนาญการพิเศษ',years:'ประสบการณ์ 7–12 ปี',color:'l3',
+     detail:'บุคลากรที่มีความเชี่ยวชาญสูง สามารถแก้ปัญหาเชิงซับซ้อน เป็นที่ปรึกษาให้เพื่อนร่วมงาน',
+     focus:'Leadership & Management, Academic Service',
+     kpi:'เป็นที่ปรึกษาให้ทีม | รับผิดชอบโครงการขนาดกลาง'},
+    {lv:4,label:'ระดับ 4 — เชี่ยวชาญ',years:'ประสบการณ์ 12+ ปี',color:'l4',
+     detail:'บุคลากรระดับสูงที่มีความเชี่ยวชาญเฉพาะด้าน บริหารทีม พัฒนาระบบงาน และเป็นตัวแทนองค์กร',
+     focus:'Leadership & Management, Digital & AI',
+     kpi:'พัฒนาระบบหรือคู่มือใหม่ | บริหารทีมได้ผลลัพธ์ที่ดี'},
+    {lv:5,label:'ระดับ 5 — ผู้บริหาร/ผู้เชี่ยวชาญ',years:'ระดับสูงสุด',color:'l5',
+     detail:'ผู้บริหารสายสนับสนุนหรือผู้เชี่ยวชาญระดับองค์กร วางนโยบายและพัฒนาระบบงานสนับสนุนให้คณะและมหาวิทยาลัย',
+     focus:'Leadership & Management ทุกมิติ',
+     kpi:'สร้างผลกระทบเชิงระบบระดับองค์กร | พัฒนาบุคลากรรุ่นใหม่'},
+  ]
+};
+
+function showCareerHelp(){
+  const list=careerDesc[curType];
+  const colors=['l1','l2','l3','l4','l5'];
+  document.getElementById('modal-title').textContent='คำอธิบายระดับ Career Path — ' + (curType==='academic'?'สายวิชาการ':'สายสนับสนุน');
+  document.getElementById('modal-body').innerHTML=list.map(d=>`
+    <div style="border:1px solid #eef1f7;border-radius:10px;padding:14px 16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div class="level-badge ${d.color}">${d.lv}</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;color:var(--navy)">${d.label}</div>
+          <div style="font-size:12px;color:var(--muted)">${d.years}</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text);margin-bottom:8px;line-height:1.6">${d.detail}</p>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:12px"><span style="font-weight:600;color:var(--navy)">สมรรถนะที่เน้น:</span> <span style="color:var(--text)">${d.focus}</span></div>
+        <div style="font-size:12px"><span style="font-weight:600;color:#27ae60">ตัวอย่าง KPI:</span> <span style="color:var(--text)">${d.kpi}</span></div>
+      </div>
+    </div>`).join('');
+  document.getElementById('comp-modal').classList.add('open');
+}
+
 function closeModal(){document.getElementById('comp-modal').classList.remove('open');}
 
 function buildActs(){
