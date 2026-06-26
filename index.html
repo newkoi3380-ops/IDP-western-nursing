@@ -121,6 +121,29 @@
   .actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
   .btn-main{padding:11px 22px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:7px}
   .btn-main:hover{background:var(--navy-dark)}
+
+  /* Modal */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:20px}
+  .modal-bg.open{display:flex}
+  .modal{background:var(--white);border-radius:14px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+  .modal-head{background:var(--navy);color:#fff;padding:18px 22px;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:center}
+  .modal-head h3{font-size:16px;font-weight:600;margin:0}
+  .modal-close{background:transparent;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0}
+  .modal-body{padding:20px 22px}
+  .comp-desc{margin-bottom:14px}
+  .comp-desc p{font-size:14px;color:var(--text);margin-bottom:10px;line-height:1.7}
+  .level-row{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f0f2f6}
+  .level-row:last-child{border-bottom:none}
+  .level-badge{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .level-badge.l1{background:#e74c3c}
+  .level-badge.l2{background:#e67e22}
+  .level-badge.l3{background:#27ae60}
+  .level-badge.l4{background:#2980b9}
+  .level-badge.l5{background:#8e44ad}
+  .level-text{font-size:13px;color:var(--text);line-height:1.6}
+  .level-label{font-weight:600;margin-bottom:2px}
+  .help-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--navy);background:transparent;color:var(--navy);font-size:11px;font-weight:700;cursor:pointer;margin-left:6px;vertical-align:middle;line-height:1;flex-shrink:0}
+  .help-btn:hover{background:var(--navy);color:#fff}
   .btn-outline{padding:11px 22px;background:var(--white);color:var(--text);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:7px}
   .btn-outline:hover{border-color:var(--navy);color:var(--navy);background:var(--navy-light)}
 
@@ -250,6 +273,9 @@
     <div class="sig-cell"><label id="lbl-s3">ลงชื่อหัวหน้าสาขา</label><input id="s3" placeholder="พิมพ์ชื่อ-สกุล"></div>
     <div class="sig-cell"><label id="lbl-s4">ลงชื่อรองคณบดีวิชาการ</label><input id="s4" placeholder="พิมพ์ชื่อ-สกุล"></div>
   </div>
+    <div class="sig-grid" style="margin-top:12px;grid-template-columns:1fr">
+    <div class="sig-cell" style="max-width:320px"><label>ลงชื่อรองคณบดี</label><input id="s5" placeholder="พิมพ์ชื่อ-สกุล"></div>
+  </div>
 </div>
 
 <div class="actions">
@@ -261,6 +287,18 @@
 </div>
 
 </div><!-- /container -->
+
+<!-- Modal คำอธิบายสมรรถนะ -->
+<div class="modal-bg" id="comp-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">คำอธิบายสมรรถนะ</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -315,11 +353,141 @@ function buildComp(){
     const sc=scores[c.id]||0;
     const tgt=targets[c.id]||'';
     const dotsCols=[1,2,3,4,5].map(i=>`<td><div class="dots"><div class="dot${sc===i?' on':''}" onclick="setScore('${c.id}',${i})" title="ระดับ ${i}"></div></div></td>`).join('');
-    return `<tr><td><strong style="color:var(--navy)">${c.id}</strong> — ${c.name} <span style="font-size:11px;color:var(--muted)">${c.sub}</span>${sc?`<span class="score-chip">ระดับ ${sc}</span>`:''}</td>${dotsCols}<td><input class="goal-in" value="${tgt}" placeholder="?" onchange="setTarget('${c.id}',this.value)"></td></tr>`;
+    return `<tr><td><strong style="color:var(--navy)">${c.id}</strong> — ${c.name} <span style="font-size:11px;color:var(--muted)">${c.sub}</span><button class="help-btn" onclick="showComp('${c.id}')" title="ดูคำอธิบาย">?</button>${sc?`<span class="score-chip">ระดับ ${sc}</span>`:''}</td>${dotsCols}<td><input class="goal-in" value="${tgt}" placeholder="?" onchange="setTarget('${c.id}',this.value)"></td></tr>`;
   }).join('');
 }
 function setScore(id,n){scores[id]=n;buildComp();recalc();}
 function setTarget(id,v){targets[id]=v;recalc();}
+
+const compDesc={
+  academic:{
+    C1:{
+      title:'C1 — Teaching Excellence (อาจารย์มืออาชีพ)',
+      desc:'ความสามารถในการจัดการเรียนการสอนอย่างมีประสิทธิภาพ ออกแบบหลักสูตร วัดผล และพัฒนาผู้เรียนได้อย่างเป็นระบบ',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'สอนตามเอกสารที่มีอยู่ ยังไม่สามารถออกแบบการสอนได้เอง ต้องการการดูแลอย่างใกล้ชิด'},
+        {lv:2,label:'พอใช้',detail:'ออกแบบแผนการสอนได้บ้าง ใช้สื่อและวิธีการสอนพื้นฐาน ได้รับผลประเมินจากนิสิตในระดับพอใช้'},
+        {lv:3,label:'ดี',detail:'ออกแบบการสอนแบบ Active Learning ได้ ใช้หลักฐานเชิงประจักษ์ในการสอน ผลประเมินนิสิต ≥ 3.5/5'},
+        {lv:4,label:'ดีมาก',detail:'พัฒนา혁신nนวัตกรรมการสอน มีผลงานด้านการสอนที่โดดเด่น ผลประเมินนิสิต ≥ 4.0/5 และได้รับ TPSF'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'เป็นต้นแบบด้านการสอน สร้างหลักสูตรใหม่ระดับคณะ/มหาวิทยาลัย เผยแพร่ผลงานการสอนในระดับชาติหรือนานาชาติ'},
+      ]
+    },
+    C2:{
+      title:'C2 — Research & Innovation (นักวิจัย)',
+      desc:'ความสามารถในการผลิตงานวิจัย นวัตกรรม และองค์ความรู้ใหม่ที่มีคุณภาพและนำไปใช้ประโยชน์ได้จริง',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'ยังไม่มีผลงานวิจัย อยู่ระหว่างเรียนรู้กระบวนการวิจัย'},
+        {lv:2,label:'พอใช้',detail:'มีส่วนร่วมในโครงการวิจัยในฐานะผู้ช่วย เริ่มเขียน Proposal ได้'},
+        {lv:3,label:'ดี',detail:'มีบทความวิจัยตีพิมพ์ TCI ฐาน 1-2 อย่างน้อย 1 เรื่อง/ปี หรือได้รับทุนวิจัยภายใน'},
+        {lv:4,label:'ดีมาก',detail:'ตีพิมพ์ในวารสารนานาชาติ (Scopus/ISI) ได้รับทุนวิจัยภายนอก มีนวัตกรรมที่นำไปใช้ได้จริง'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'เป็น PI โครงการวิจัยขนาดใหญ่ มีผลงานตีพิมพ์นานาชาติต่อเนื่อง สร้างเครือข่ายวิจัยระดับชาติ/นานาชาติ'},
+      ]
+    },
+    C3:{
+      title:'C3 — Academic Service (บริการวิชาการ)',
+      desc:'ความสามารถในการให้บริการวิชาการแก่สังคม ชุมชน และวิชาชีพ รวมถึงการปฏิบัติงาน Faculty Practice',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'ยังไม่มีกิจกรรมบริการวิชาการ หรือ FP Log ต่ำกว่า 6 ครั้ง/ปี'},
+        {lv:2,label:'พอใช้',detail:'เข้าร่วมกิจกรรมบริการวิชาการที่คณะจัดขึ้น FP Log 6-8 ครั้ง/ปี'},
+        {lv:3,label:'ดี',detail:'ริเริ่มโครงการบริการวิชาการ FP Log ≥ 12 ครั้ง/ปี มีผลลัพธ์ที่วัดได้'},
+        {lv:4,label:'ดีมาก',detail:'โครงการบริการวิชาการสร้างผลกระทบต่อชุมชน มีรายงานผลและนำเสนอในเวทีวิชาชีพ'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'เป็นผู้นำด้านบริการวิชาการระดับชาติ สร้างเครือข่าย MOU กับหน่วยงานภายนอก'},
+      ]
+    },
+    C4:{
+      title:'C4 — Digital & AI Competency (ดิจิทัล)',
+      desc:'ความสามารถในการใช้เทคโนโลยีดิจิทัลและ AI ในการสอน วิจัย และบริหารจัดการ',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'ใช้งานคอมพิวเตอร์และโปรแกรมพื้นฐานได้ ยังไม่ได้ใช้ดิจิทัลในการสอน'},
+        {lv:2,label:'พอใช้',detail:'ใช้ LMS และสื่อดิจิทัลพื้นฐานในการสอน รู้จัก AI Tool แต่ยังไม่ได้ใช้งานจริง'},
+        {lv:3,label:'ดี',detail:'บูรณาการ AI Tool ในการสอนหรือวิจัยอย่างน้อย 1 รายวิชา มี Digital Portfolio'},
+        {lv:4,label:'ดีมาก',detail:'พัฒนาสื่อดิจิทัลต้นแบบ นำ AI มาใช้ในหลายมิติ ถ่ายทอดความรู้ดิจิทัลให้เพื่อนร่วมงาน'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'เป็นผู้เชี่ยวชาญด้าน EdTech/AI ในองค์กร สร้างนวัตกรรมดิจิทัลที่ใช้งานได้จริงในระดับคณะ/มหาวิทยาลัย'},
+      ]
+    },
+    C5:{
+      title:'C5 — Leadership & Management (ผู้นำ)',
+      desc:'ความสามารถในการนำทีม บริหารโครงการ และสร้างวัฒนธรรมองค์กรเชิงบวก',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'ทำงานตามที่ได้รับมอบหมาย ยังไม่มีประสบการณ์นำทีม'},
+        {lv:2,label:'พอใช้',detail:'มีส่วนร่วมในคณะกรรมการหรือโครงการ เริ่มแสดงภาวะผู้นำในบางโอกาส'},
+        {lv:3,label:'ดี',detail:'รับผิดชอบโครงการหรือคณะกรรมการ บริหารจัดการงานได้ตามเป้าหมาย'},
+        {lv:4,label:'ดีมาก',detail:'นำทีมหรือสาขาวิชา สร้างผลลัพธ์เชิงบวก พัฒนาบุคลากรในทีมได้'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'เป็นผู้บริหารระดับสูง วางนโยบายเชิงกลยุทธ์ สร้างวัฒนธรรมองค์กรที่ยั่งยืน'},
+      ]
+    },
+  },
+  support:{
+    C1:{title:'C1 — Teaching Support (N/A)',desc:'สมรรถนะนี้ไม่เกี่ยวข้องกับบุคลากรสายสนับสนุน',levels:[]},
+    C2:{
+      title:'C2 — Research Support (สนับสนุนงานวิจัย)',
+      desc:'ความสามารถในการสนับสนุนกระบวนการวิจัย ตั้งแต่การจัดทำเอกสาร จัดซื้อ เบิกจ่าย จนถึงการรายงานผล',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'ยังไม่คุ้นเคยกับระบบวิจัย ต้องการการดูแลอย่างใกล้ชิดในทุกขั้นตอน'},
+        {lv:2,label:'พอใช้',detail:'ดำเนินการจัดซื้อและเบิกจ่ายโครงการวิจัยพื้นฐานได้ โดยมีผู้ดูแล'},
+        {lv:3,label:'ดี',detail:'จัดการงานวิจัยได้อิสระ ใช้ระบบ NRMS/DRMS ได้คล่อง ไม่มีข้อผิดพลาดด้านเอกสาร'},
+        {lv:4,label:'ดีมาก',detail:'ประสานหลายโครงการพร้อมกัน แก้ปัญหาเชิงรุก เป็นที่พึ่งของนักวิจัย'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'เชี่ยวชาญระบบวิจัยทุกด้าน ถ่ายทอดความรู้ให้เพื่อนร่วมงาน พัฒนาคู่มือและระบบใหม่'},
+      ]
+    },
+    C3:{
+      title:'C3 — Academic Service Support (สนับสนุนบริการวิชาการ)',
+      desc:'ความสามารถในการประสานงานและสนับสนุนโครงการบริการวิชาการ กิจกรรม และงานด้านวิชาชีพ',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'ยังไม่เคยจัดหรือประสานงานกิจกรรม ต้องการการแนะนำทุกขั้นตอน'},
+        {lv:2,label:'พอใช้',detail:'ช่วยงานกิจกรรมตามที่ได้รับมอบหมาย จัดทำเอกสารพื้นฐานได้'},
+        {lv:3,label:'ดี',detail:'ประสานงานโครงการบริการวิชาการได้อิสระ เอกสารครบถ้วน รายงานผลได้'},
+        {lv:4,label:'ดีมาก',detail:'รับผิดชอบหลายโครงการพร้อมกัน แก้ปัญหาเฉพาะหน้าได้ดี ผู้รับบริการพึงพอใจ'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'ออกแบบระบบการจัดกิจกรรม เป็นผู้เชี่ยวชาญด้านงานบริการวิชาการของคณะ'},
+      ]
+    },
+    C4:{
+      title:'C4 — Digital & AI Competency (ดิจิทัล)',
+      desc:'ความสามารถในการใช้เทคโนโลยีดิจิทัล ระบบ HR ระบบสำนักงาน และ AI เพื่อเพิ่มประสิทธิภาพการทำงาน',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'ใช้โปรแกรม Office พื้นฐานได้ ยังไม่ใช้ระบบดิจิทัลเฉพาะทาง'},
+        {lv:2,label:'พอใช้',detail:'ใช้ระบบ HR/สำนักงานพื้นฐานได้ รู้จัก AI Tool แต่ยังไม่ได้ใช้ในงานจริง'},
+        {lv:3,label:'ดี',detail:'ใช้ e-Filing, ระบบ HR ได้คล่อง นำ AI มาช่วยงานได้อย่างน้อย 1 ด้าน'},
+        {lv:4,label:'ดีมาก',detail:'ใช้ดิจิทัลลด paperwork ได้จริง ถ่ายทอดทักษะให้เพื่อนร่วมงาน'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'ออกแบบระบบดิจิทัลสำนักงาน เป็น Digital Champion ของคณะ'},
+      ]
+    },
+    C5:{
+      title:'C5 — Leadership & Management (บริหารงานธุรการ)',
+      desc:'ความสามารถในการบริหารงานธุรการ งบประมาณ และการจัดการทรัพยากรขององค์กรอย่างมีประสิทธิภาพ',
+      levels:[
+        {lv:1,label:'ต้องพัฒนา',detail:'ทำงานตามที่ได้รับมอบหมาย ยังต้องการการตรวจสอบในทุกขั้นตอน'},
+        {lv:2,label:'พอใช้',detail:'จัดทำเอกสารและรายงานพื้นฐานได้ เริ่มบริหารงบประมาณเล็กน้อย'},
+        {lv:3,label:'ดี',detail:'จัดทำแผนงบประมาณและรายงานผลได้อิสระ บริหารงานในความรับผิดชอบได้ดี'},
+        {lv:4,label:'ดีมาก',detail:'บริหารหลายโครงการพร้อมกัน เป็นที่ปรึกษาด้านธุรการให้ทีม'},
+        {lv:5,label:'เชี่ยวชาญ',detail:'วางระบบการบริหารธุรการ พัฒนาคู่มือและกระบวนการใหม่ เป็นผู้เชี่ยวชาญระดับองค์กร'},
+      ]
+    },
+  }
+};
+
+function showComp(id){
+  const d=compDesc[curType][id];
+  if(!d)return;
+  document.getElementById('modal-title').textContent=d.title;
+  const lvColors=['l1','l2','l3','l4','l5'];
+  const lvNames=['ต้องพัฒนา','พอใช้','ดี','ดีมาก','เชี่ยวชาญ'];
+  document.getElementById('modal-body').innerHTML=`
+    <div class="comp-desc">
+      <p><strong>ความหมาย:</strong> ${d.desc}</p>
+      ${d.levels.length===0?'<p style="color:var(--muted);font-style:italic">ไม่เกี่ยวข้องกับสายสนับสนุน</p>':
+        d.levels.map(l=>`
+        <div class="level-row">
+          <div class="level-badge ${lvColors[l.lv-1]}">${l.lv}</div>
+          <div class="level-text">
+            <div class="level-label">${l.label}</div>
+            <div>${l.detail}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('comp-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('comp-modal').classList.remove('open');}
 
 function buildActs(){
   const list=compList[curType];
@@ -329,8 +497,11 @@ function buildActs(){
       <button class="rm-btn" onclick="removeAct(${a.id})" title="ลบ">×</button>
       <div style="margin-top:20px">
         <div class="grid3" style="margin-bottom:10px">
-          <div class="field"><label>สมรรถนะที่พัฒนา</label>
-            <select onchange="updAct(${a.id},'comp',this.value)">
+          <div class="field">
+            <label style="display:flex;align-items:center;gap:6px">สมรรถนะที่พัฒนา
+              <button class="help-btn" onclick="showComp(document.getElementById('comp-sel-${a.id}').value)" title="ดูคำอธิบายสมรรถนะนี้">?</button>
+            </label>
+            <select id="comp-sel-${a.id}" onchange="updAct(${a.id},'comp',this.value)">
               ${list.map(c=>`<option value="${c.id}"${a.comp===c.id?' selected':''}>${c.id} — ${c.name}</option>`).join('')}
             </select>
           </div>
@@ -382,7 +553,7 @@ function collect(){
     section2:{scores:{...scores},targets:{...targets}},
     section3:acts.map(a=>({...a})),
     section4:{r1:{result:document.getElementById('f-r1a').value,problem:document.getElementById('f-r1b').value,fix:document.getElementById('f-r1c').value},r2:{result:document.getElementById('f-r2a').value,problem:document.getElementById('f-r2b').value,fix:document.getElementById('f-r2c').value},summary:document.getElementById('f-summary').value},
-    section5:{sig1:document.getElementById('s1').value,sig2:document.getElementById('s2').value,sig3:document.getElementById('s3').value,sig4:document.getElementById('s4').value},
+    section5:{sig1:document.getElementById('s1').value,sig2:document.getElementById('s2').value,sig3:document.getElementById('s3').value,sig4:document.getElementById('s4').value,sig5:document.getElementById('s5').value},
     budgetTotal:calcBudget(),savedAt:new Date().toISOString()
   };
 }
@@ -423,7 +594,7 @@ function submitToSheets(){
 
 function clearAll(){
   if(!confirm('ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?'))return;
-  ['i-name','i-pos','i-branch','i-mentor','s1','s2','s3','s4','f-r1a','f-r1b','f-r1c','f-r2a','f-r2b','f-r2c','f-summary'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['i-name','i-pos','i-branch','i-mentor','s1','s2','s3','s4','s5','f-r1a','f-r1b','f-r1c','f-r2a','f-r2b','f-r2c','f-summary'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   document.getElementById('i-year').value='2569';
   document.getElementById('i-date').value='';
   scores={};targets={};acts=[];careerLv=1;
