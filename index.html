@@ -156,6 +156,21 @@
   .field.err input,.field.err textarea,.field.err select{border-color:var(--red)}
   .field.err .err-msg{display:block}
 
+  /* Guide box */
+  .guide-box{background:#F0F7FF;border:1px solid #c8dff7;border-left:4px solid var(--navy);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:18px}
+  .guide-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px}
+  .guide-list{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+  .guide-list li{font-size:13px;color:var(--text);line-height:1.6}
+  .guide-list em{color:var(--muted);font-style:normal}
+  .guide-badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--navy);background:var(--navy);color:#fff;font-size:10px;font-weight:700;vertical-align:middle}
+  .guide-scale{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .sc{padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
+  .sc1{background:#FCEBEB;color:#a32d2d}
+  .sc2{background:#FFF3E0;color:#7a4400}
+  .sc3{background:#E8F5E9;color:#1a6b3c}
+  .sc4{background:#EBF5FB;color:var(--navy)}
+  .sc5{background:#F3E5F5;color:#6a1b9a}
+
   @media(max-width:640px){
     .grid2,.grid3,.sig-grid{grid-template-columns:1fr}
     .progress-stats{grid-template-columns:repeat(2,1fr)}
@@ -195,12 +210,23 @@
 <!-- Section 1 -->
 <div class="card">
   <div class="sec-head"><div class="sec-num">1</div><div class="sec-title">ข้อมูลส่วนตัว</div></div>
-  <div class="grid2">
-    <div class="field"><label class="req">ชื่อ-สกุล</label><input id="i-name" placeholder="ชื่อ-นามสกุล" oninput="recalc()"><div class="err-msg">กรุณากรอกชื่อ-สกุล</div></div>
-    <div class="field"><label class="req" id="lbl-pos">ตำแหน่ง</label><input id="i-pos" placeholder="ตำแหน่ง" oninput="recalc()"></div>
+  <div class="guide-box">
+    <div class="guide-title">📌 วิธีกรอก</div>
+    <ol class="guide-list">
+      <li>กรอก <strong>ชื่อ-สกุล</strong> ให้ครบถ้วน เช่น <em>อาจารย์ ดร.สมหญิง ใจดี</em></li>
+      <li>กรอก <strong>ตำแหน่ง</strong> ตามที่ระบุในสัญญาจ้าง เช่น <em>อาจารย์ประจำ / เจ้าหน้าที่บริหารงานทั่วไป</em></li>
+      <li>กรอก <strong>สาขาวิชา/ฝ่าย</strong> ที่สังกัด เช่น <em>การพยาบาลเด็กและวัยรุ่น</em></li>
+      <li>เลือก <strong>ระดับ Career Path</strong> ที่ตรงกับประสบการณ์ปัจจุบัน (กด <span class="guide-badge">?</span> เพื่อดูคำอธิบายแต่ละระดับ)</li>
+      <li>กรอก <strong>ชื่อ Academic Mentor</strong> ที่ได้รับการแต่งตั้ง (กด <span class="guide-badge">?</span> เพื่อดูว่า Mentor คือใคร)</li>
+      <li>เลือก <strong>วันที่ลงนาม IDP</strong> ซึ่งโดยปกติคือวันที่จัดทำแผนนี้</li>
+    </ol>
   </div>
   <div class="grid2">
-    <div class="field"><label class="req" id="lbl-branch">สาขาวิชา</label><input id="i-branch" placeholder="สาขาวิชา" oninput="recalc()"></div>
+    <div class="field"><label class="req">ชื่อ-สกุล</label><input id="i-name" placeholder="เช่น อาจารย์ ดร.สมหญิง ใจดี" oninput="recalc()"><div class="err-msg">กรุณากรอกชื่อ-สกุล</div></div>
+    <div class="field"><label class="req" id="lbl-pos">ตำแหน่ง</label><input id="i-pos" placeholder="เช่น อาจารย์ประจำ" oninput="recalc()"></div>
+  </div>
+  <div class="grid2">
+    <div class="field"><label class="req" id="lbl-branch">สาขาวิชา</label><input id="i-branch" placeholder="เช่น การพยาบาลเด็กและวัยรุ่น" oninput="recalc()"></div>
     <div class="field"><label>ปีที่จัดทำ IDP</label><input id="i-year" value="2569" oninput="recalc()"></div>
   </div>
   <div class="field" style="margin-bottom:14px">
@@ -215,7 +241,7 @@
         <span id="lbl-mentor">Academic Mentor</span>
         <button class="help-btn" id="mentor-help-btn" onclick="showMentorHelp()" title="ดูคำอธิบาย Academic Mentor">?</button>
       </label>
-      <input id="i-mentor" placeholder="ชื่อ Mentor" oninput="recalc()">
+      <input id="i-mentor" placeholder="เช่น รศ.ดร.นภาพร วิจิตรพยาบาล" oninput="recalc()">
     </div>
     <div class="field"><label>วันที่ลงนาม IDP</label><input id="i-date" type="date" oninput="recalc()"></div>
   </div>
@@ -224,8 +250,23 @@
 <!-- Section 2 -->
 <div class="card">
   <div class="sec-head"><div class="sec-num">2</div><div class="sec-title">ประเมินสมรรถนะปัจจุบัน</div></div>
-  <p style="font-size:12px;color:var(--muted);margin-bottom:14px">คลิก ● เลือกระดับปัจจุบัน (1–5) และกรอกเป้าหมายปลายปีในช่องขวา<br>
-  <strong style="color:#1B5E20">1</strong>=ต้องพัฒนา &nbsp; <strong style="color:#1565C0">2</strong>=พอใช้ &nbsp; <strong style="color:#1a6b3c">3</strong>=ดี &nbsp; <strong style="color:#E65100">4</strong>=ดีมาก &nbsp; <strong style="color:#6A1B9A">5</strong>=เชี่ยวชาญ</p>
+  <div class="guide-box">
+    <div class="guide-title">📌 วิธีกรอก</div>
+    <ol class="guide-list">
+      <li>อ่านชื่อสมรรถนะแต่ละตัว (C1–C5) กด <span class="guide-badge">?</span> เพื่อดูคำอธิบายและตัวอย่างพฤติกรรมในแต่ละระดับ</li>
+      <li><strong>คลิกวงกลม</strong> ที่ตรงกับระดับปัจจุบันของตัวเอง เมื่อเลือกแล้ววงกลมจะเปลี่ยนเป็นสีน้ำเงิน</li>
+      <li>กรอก <strong>เป้าหมายปลายปี</strong> ในช่องขวาสุด โดยระบุเป็นตัวเลข 1–5 ที่ต้องการพัฒนาถึงภายในสิ้นปี<br>
+      <span style="color:var(--muted)">ตัวอย่าง: ปัจจุบันอยู่ระดับ 2 → ตั้งเป้าหมาย 3</span></li>
+      <li>ต้องประเมินสมรรถนะ <strong>ให้ครบทุกตัว</strong> (ยกเว้น C1 สำหรับสายสนับสนุนซึ่งเป็น N/A)</li>
+    </ol>
+    <div class="guide-scale">
+      <span class="sc sc1">1 ต้องพัฒนา</span>
+      <span class="sc sc2">2 พอใช้</span>
+      <span class="sc sc3">3 ดี</span>
+      <span class="sc sc4">4 ดีมาก</span>
+      <span class="sc sc5">5 เชี่ยวชาญ</span>
+    </div>
+  </div>
   <div class="comp-wrap">
     <table class="comp-tbl"><thead><tr>
       <th style="text-align:left">สมรรถนะหลัก</th>
@@ -239,10 +280,23 @@
 <!-- Section 3 -->
 <div class="card">
   <div class="sec-head"><div class="sec-num">3</div><div class="sec-title">แผนพัฒนาสมรรถนะ (70-20-10)</div></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-    <span style="background:var(--green-light);color:#1a6b3c;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">70% เรียนรู้จากงานจริง</span>
-    <span style="background:var(--navy-light);color:var(--navy);padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">20% เรียนรู้จากคนอื่น</span>
-    <span style="background:var(--amber-light);color:#7a4400;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">10% อบรม/สัมมนา</span>
+  <div class="guide-box">
+    <div class="guide-title">📌 วิธีกรอก</div>
+    <ol class="guide-list">
+      <li>กด <strong>"+ เพิ่มกิจกรรมพัฒนา"</strong> เพื่อเพิ่มแต่ละกิจกรรม ควรมีอย่างน้อย 3–6 กิจกรรม/ปี</li>
+      <li>เลือก <strong>สมรรถนะที่ต้องการพัฒนา</strong> (C1–C5) ให้ตรงกับที่ประเมินในส่วนที่ 2 กด <span class="guide-badge">?</span> เพื่อดูคำอธิบาย</li>
+      <li>อธิบาย <strong>กิจกรรม</strong> ให้ชัดเจน ระบุว่าจะทำอะไร กับใคร ที่ไหน<br>
+      <span style="color:var(--muted)">ตัวอย่าง: เข้าร่วมอบรม AI for Teaching Education ผ่านระบบ e-Learning ของมหาวิทยาลัย</span></li>
+      <li>เลือก <strong>วิธีการ</strong> ตามหลัก 70-20-10 เพียง 1 วิธีต่อกิจกรรม</li>
+      <li>ระบุ <strong>ระยะเวลา</strong> ที่จะดำเนินการ เช่น <em>ก.พ.–เม.ย. 69</em></li>
+      <li>กำหนด <strong>ตัวชี้วัด (KPI)</strong> ให้วัดได้จริง เช่น <em>ได้รับ Certificate / ผ่านการประเมิน ≥ 80%</em></li>
+      <li>ใส่ <strong>งบประมาณ</strong> ที่ต้องใช้ (ถ้าไม่มีค่าใช้จ่าย ใส่ 0)</li>
+    </ol>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <span style="background:var(--green-light);color:#1a6b3c;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600">70% เรียนรู้จากงานจริง — ลงมือปฏิบัติ รับผิดชอบงานใหม่</span>
+      <span style="background:var(--navy-light);color:var(--navy);padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600">20% เรียนรู้จากคนอื่น — พบ Mentor, CoP, สังเกตงาน</span>
+      <span style="background:var(--amber-light);color:#7a4400;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600">10% อบรม/สัมมนา — คอร์สออนไลน์, ประชุมวิชาการ</span>
+    </div>
   </div>
   <div id="act-list"></div>
   <button class="add-act" onclick="addAct()">+ เพิ่มกิจกรรมพัฒนา</button>
@@ -252,29 +306,50 @@
 <!-- Section 4 -->
 <div class="card">
   <div class="sec-head"><div class="sec-num">4</div><div class="sec-title">การติดตามความก้าวหน้า (ทบทวนทุก 6 เดือน)</div></div>
+  <div class="guide-box">
+    <div class="guide-title">📌 วิธีกรอก</div>
+    <ol class="guide-list">
+      <li><strong>รอบที่ 1 (มิ.ย. 69)</strong> — กรอกเมื่อครบ 6 เดือนแรก โดยบันทึกผลการดำเนินงานตามแผนที่วางไว้ในส่วนที่ 3</li>
+      <li><strong>รอบที่ 2 (ธ.ค. 69)</strong> — กรอกเมื่อสิ้นปีงบประมาณ พร้อมสรุปภาพรวมการพัฒนาตลอดปี</li>
+      <li>ช่อง <strong>ผลการดำเนินงาน</strong> — ระบุว่าทำกิจกรรมใดไปแล้วบ้าง ผลเป็นอย่างไร<br>
+      <span style="color:var(--muted)">ตัวอย่าง: เข้าอบรม AI for Teaching สำเร็จ ได้รับ Certificate เมื่อ ม.ค. 69</span></li>
+      <li>ช่อง <strong>ปัญหาอุปสรรค</strong> — ระบุสิ่งที่ทำให้ดำเนินการไม่ได้ตามแผน<br>
+      <span style="color:var(--muted)">ตัวอย่าง: ภาระสอนมาก ทำให้ไม่มีเวลาเข้าร่วม Writing Retreat</span></li>
+      <li>ช่อง <strong>แผนแก้ไข</strong> — ระบุแนวทางที่จะแก้ไขปัญหาในรอบต่อไป<br>
+      <span style="color:var(--muted)">ตัวอย่าง: ขอ Study Leave 3 วันในเดือน ก.ค. เพื่อเขียนบทความ</span></li>
+    </ol>
+  </div>
   <table class="follow-tbl" style="margin-bottom:12px">
     <thead><tr><th>รอบ</th><th>ผลการดำเนินงาน</th><th>ปัญหาอุปสรรค</th><th>แผนแก้ไข</th></tr></thead>
     <tbody>
       <tr>
         <td>รอบที่ 1<br><small>(มิ.ย. 69)</small></td>
-        <td><textarea id="f-r1a" placeholder="ผลการดำเนินงาน..."></textarea></td>
-        <td><textarea id="f-r1b" placeholder="ปัญหาที่พบ..."></textarea></td>
-        <td><textarea id="f-r1c" placeholder="แนวทางแก้ไข..."></textarea></td>
+        <td><textarea id="f-r1a" placeholder="ระบุกิจกรรมที่ดำเนินการแล้ว และผลที่ได้รับ..."></textarea></td>
+        <td><textarea id="f-r1b" placeholder="ระบุอุปสรรคที่พบ (ถ้ามี)..."></textarea></td>
+        <td><textarea id="f-r1c" placeholder="ระบุแนวทางแก้ไขในรอบถัดไป..."></textarea></td>
       </tr>
       <tr>
         <td>รอบที่ 2<br><small>(ธ.ค. 69)</small></td>
-        <td><textarea id="f-r2a" placeholder="ผลการดำเนินงาน..."></textarea></td>
-        <td><textarea id="f-r2b" placeholder="ปัญหาที่พบ..."></textarea></td>
-        <td><textarea id="f-r2c" placeholder="แนวทางแก้ไข..."></textarea></td>
+        <td><textarea id="f-r2a" placeholder="ระบุกิจกรรมที่ดำเนินการแล้ว และผลที่ได้รับ..."></textarea></td>
+        <td><textarea id="f-r2b" placeholder="ระบุอุปสรรคที่พบ (ถ้ามี)..."></textarea></td>
+        <td><textarea id="f-r2c" placeholder="ระบุแนวทางแก้ไขในรอบถัดไป..."></textarea></td>
       </tr>
     </tbody>
   </table>
-  <div class="field"><label>สรุปภาพรวมปี</label><textarea id="f-summary" placeholder="สรุปผลการพัฒนาตลอดปีงบประมาณ..." style="min-height:72px"></textarea></div>
+  <div class="field"><label>สรุปภาพรวมปี</label><textarea id="f-summary" placeholder="สรุปผลการพัฒนาตลอดปี เช่น พัฒนาสมรรถนะใดได้บ้าง บรรลุเป้าหมายหรือไม่ และแผนพัฒนาปีถัดไป..." style="min-height:72px"></textarea></div>
 </div>
 
 <!-- Section 5 -->
 <div class="card">
   <div class="sec-head"><div class="sec-num">5</div><div class="sec-title">การรับรอง</div></div>
+  <div class="guide-box">
+    <div class="guide-title">📌 วิธีกรอก</div>
+    <ol class="guide-list">
+      <li>พิมพ์ <strong>ชื่อ-สกุล</strong> ของผู้ลงนามแต่ละคนในช่องที่กำหนด</li>
+      <li>ผู้ลงนามต้องครบทั้ง 5 คน ได้แก่ บุคลากร, Academic Mentor/ผู้บังคับบัญชา, หัวหน้าสาขา, รองคณบดี และคณบดี</li>
+      <li>หลังกรอกครบแล้ว กด <strong>"📊 ส่งข้อมูลเข้า Google Sheets"</strong> เพื่อบันทึกข้อมูล และกด <strong>"🖨️ พิมพ์ / บันทึก PDF"</strong> เพื่อเก็บเอกสารฉบับสมบูรณ์</li>
+    </ol>
+  </div>
   <div class="sig-grid">
     <div class="sig-cell"><label>ลงชื่อบุคลากร</label><input id="s1" placeholder="พิมพ์ชื่อ-สกุล"></div>
     <div class="sig-cell"><label id="lbl-s2">ลงชื่อ Academic Mentor</label><input id="s2" placeholder="พิมพ์ชื่อ-สกุล"></div>
