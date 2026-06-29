@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>หน้าผู้ประเมิน PA — คณะพยาบาลศาสตร์ มหาวิทยาลัยเวสเทิร์น</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1E4080;--light:#D6E4F0;--green:#27ae60;--green-bg:#E8F5E9;
+  --amber:#e67e22;--amber-bg:#FFF3E0;--red:#e74c3c;--yellow:#FFF9C4;
+  --border:#dde3ec;--bg:#f5f7fa;--white:#fff;--text:#1a1a2e;--muted:#6b7280;
+  --radius:10px;--radius-sm:6px;
+}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:22px 18px}
+
+.banner{background:linear-gradient(135deg,#27ae60,#1a8a48);border-radius:12px;padding:20px 26px;margin-bottom:18px;color:#fff}
+.banner .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;margin-bottom:7px}
+.banner h1{font-size:17px;font-weight:700;margin-bottom:3px}
+.banner p{font-size:13px;color:#b8f0c8}
+
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px}
+.sec-head{display:flex;align-items:center;gap:9px;margin-bottom:14px;padding-bottom:9px;border-bottom:2px solid var(--light)}
+.sec-num{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-title{font-size:15px;font-weight:700;color:var(--navy)}
+
+.guide{background:#F0FFF4;border:1px solid #a8e6bc;border-left:4px solid var(--green);border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:14px}
+.guide-title{font-size:12px;font-weight:700;color:var(--green);margin-bottom:5px}
+.guide ol{margin:0;padding-left:16px;display:flex;flex-direction:column;gap:4px}
+.guide li{font-size:12px;color:var(--text);line-height:1.6}
+
+/* Staff selector */
+.search-box{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px}
+.field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px}
+.field label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;background:var(--white);color:var(--text);outline:none;transition:.15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--navy)}
+.field textarea{resize:vertical;min-height:60px}
+
+.btn-load{padding:9px 18px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;align-self:flex-end}
+.btn-load:hover{background:#163266}
+
+/* Staff info card */
+.staff-info{display:none;background:var(--light);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px}
+.staff-info.show{display:block}
+.staff-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.info-item label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:2px}
+.info-item span{font-size:14px;color:var(--navy);font-weight:500}
+
+/* KPI score table */
+.kpi-tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:10px}
+.kpi-tbl th{background:var(--navy);color:#fff;padding:8px 9px;font-weight:700;font-family:'Sarabun',sans-serif;text-align:center;border:1.5px solid var(--navy)}
+.kpi-tbl td{border:1.5px solid #aaa;padding:8px 10px;vertical-align:middle}
+.kpi-tbl .area-cell{background:#EBF5FB;font-weight:700;color:var(--navy)}
+.kpi-tbl .wt-cell{background:var(--light);font-weight:700;color:var(--navy);text-align:center}
+.kpi-tbl .score-cell{background:var(--yellow);text-align:center}
+.kpi-score-in{width:100px;padding:6px 8px;border:1.5px solid var(--border);border-radius:5px;font-size:13px;text-align:center;font-family:'Sarabun',sans-serif;outline:none}
+.kpi-score-in:focus{border-color:var(--green)}
+.kpi-tbl .total-row td{background:var(--light);font-weight:700;color:var(--navy);text-align:center}
+
+/* Eval table */
+.eval-tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.eval-tbl th{background:var(--navy);color:#fff;padding:8px 9px;font-weight:700;font-family:'Sarabun',sans-serif;text-align:center;border:1.5px solid var(--navy)}
+.eval-tbl td{border:1.5px solid #aaa;padding:8px 10px;vertical-align:middle}
+.eval-tbl .round-cell{background:#EBF5FB;font-weight:700;color:var(--navy);text-align:center;white-space:nowrap}
+.eval-tbl .avg-row td{background:var(--light)}
+.chk-row{display:flex;gap:10px;flex-wrap:wrap}
+.chk-opt{display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer}
+.eval-note-in{width:100%;border:1.5px solid var(--border);border-radius:5px;padding:6px 8px;font-size:13px;font-family:'Sarabun',sans-serif;resize:vertical;min-height:55px;outline:none}
+.eval-note-in:focus{border-color:var(--green)}
+.score-in{width:100px;padding:5px 8px;border:1.5px solid var(--border);border-radius:5px;font-size:13px;text-align:center;font-family:'Sarabun',sans-serif;outline:none}
+.score-in:focus{border-color:var(--green)}
+
+/* KPI preview */
+.kpi-preview{background:#f8fbff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:6px;font-size:13px;color:var(--muted);white-space:pre-wrap;line-height:1.7}
+
+/* Actions */
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn-g{padding:11px 22px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;font-weight:700;cursor:pointer;transition:.15s}
+.btn-g:hover{background:#1a8a48}
+.btn-o{padding:11px 22px;background:var(--white);color:var(--text);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;transition:.15s}
+.btn-o:hover{border-color:var(--green);color:var(--green)}
+
+/* Status */
+.status-bar{display:none;padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:14px;font-size:14px;font-weight:500}
+.status-bar.loading{display:flex;align-items:center;gap:10px;background:#EBF5FB;color:var(--navy)}
+.status-bar.success{display:flex;align-items:center;gap:10px;background:var(--green-bg);color:#1a6b3c}
+.status-bar.error{display:flex;align-items:center;gap:10px;background:#FFEBEE;color:#c62828}
+
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:10px 22px;border-radius:var(--radius);font-size:14px;font-family:'Sarabun',sans-serif;box-shadow:0 4px 18px rgba(39,174,96,.3);opacity:0;transition:.3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1}
+
+@media(max-width:640px){
+  .staff-info-grid{grid-template-columns:1fr 1fr}
+  .search-box{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="banner">
+  <div class="badge">สำหรับผู้ประเมินเท่านั้น</div>
+  <h1>🎯 หน้ากรอกคะแนน PA — ผู้ประเมิน</h1>
+  <p>คณะพยาบาลศาสตร์ มหาวิทยาลัยเวสเทิร์น วิทยาเขตบุรีรัมย์</p>
+</div>
+
+<div id="status-bar" class="status-bar"></div>
+
+<!-- ส่วนที่ 1 ข้อมูลผู้ประเมิน -->
+<div class="card">
+  <div class="sec-head"><div class="sec-num">1</div><div class="sec-title">ข้อมูลผู้ประเมิน</div></div>
+  <div class="guide">
+    <div class="guide-title">📌 วิธีใช้งาน</div>
+    <ol>
+      <li>กรอกชื่อและตำแหน่งของท่าน (ผู้ประเมิน)</li>
+      <li>เลือกปีการศึกษา จากนั้นเลือกชื่อบุคลากรที่ต้องการประเมิน</li>
+      <li>กด <strong>"โหลดข้อมูล PA"</strong> ระบบจะดึง KPI ที่บุคลากรกรอกไว้มาแสดงให้</li>
+      <li>กรอกคะแนนแต่ละ KPI ระดับผลการปฏิบัติงาน และข้อเสนอแนะ</li>
+      <li>กด <strong>"บันทึกผลการประเมิน"</strong></li>
+    </ol>
+  </div>
+  <div class="search-box">
+    <div class="field">
+      <label>ชื่อ-สกุลผู้ประเมิน *</label>
+      <input id="eval-name" placeholder="ชื่อ-สกุลผู้ประเมิน">
+    </div>
+    <div class="field">
+      <label>ตำแหน่งผู้ประเมิน *</label>
+      <input id="eval-role" placeholder="เช่น หัวหน้าสาขา / รองคณบดี">
+    </div>
+  </div>
+  <div class="search-box">
+    <div class="field" style="max-width:160px">
+      <label>ปีการศึกษา</label>
+      <select id="sel-year" onchange="filterStaff()">
+        <option value="2568">2568</option>
+        <option value="2569" selected>2569</option>
+        <option value="2570">2570</option>
+        <option value="2571">2571</option>
+        <option value="2572">2572</option>
+        <option value="2573">2573</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>ค้นหาชื่อบุคลากร *</label>
+      <input id="search-name" placeholder="พิมพ์ชื่อเพื่อค้นหา..." oninput="filterStaff()">
+    </div>
+    <div class="field">
+      <label>เลือกบุคลากร *</label>
+      <select id="sel-staff" onchange="onSelectStaff()">
+        <option value="">-- เลือกบุคลากร --</option>
+      </select>
+    </div>
+    <button class="btn-load" onclick="loadPAData()">🔍 โหลดข้อมูล PA</button>
+  </div>
+</div>
+
+<!-- ข้อมูลบุคลากร -->
+<div class="staff-info" id="staff-info">
+  <div class="staff-info-grid">
+    <div class="info-item"><label>ชื่อ-สกุล</label><span id="info-name">—</span></div>
+    <div class="info-item"><label>ตำแหน่ง</label><span id="info-pos">—</span></div>
+    <div class="info-item"><label>สาขา/ฝ่าย</label><span id="info-branch">—</span></div>
+    <div class="info-item"><label>ประเภท</label><span id="info-type">—</span></div>
+    <div class="info-item"><label>ปีการศึกษา</label><span id="info-year">—</span></div>
+    <div class="info-item"><label>จำนวน OKR</label><span id="info-okr">—</span></div>
+  </div>
+</div>
+
+<!-- ส่วนที่ 2 คะแนน KPI -->
+<div class="card" id="kpi-card" style="display:none">
+  <div class="sec-head"><div class="sec-num">2</div><div class="sec-title">ให้คะแนนตัวชี้วัดการปฏิบัติงาน (KPI)</div></div>
+  <div class="guide">
+    <div class="guide-title">📌 วิธีกรอก</div>
+    <ol>
+      <li>ดู KPI ที่บุคลากรตั้งไว้ (กล่องสีเทาด้านบน) แล้วให้คะแนนตามผลงานจริง</li>
+      <li>คะแนนแต่ละด้านต้องไม่เกินน้ำหนักที่กำหนด เช่น ด้านที่ 1 (60%) ให้คะแนนสูงสุด 60</li>
+    </ol>
+  </div>
+  <table class="kpi-tbl">
+    <thead>
+      <tr>
+        <th style="width:4%">ที่</th>
+        <th style="width:22%">ด้านการปฏิบัติงาน</th>
+        <th style="width:8%">น้ำหนัก</th>
+        <th style="width:42%">KPI ที่บุคลากรตั้งไว้</th>
+        <th style="width:24%">คะแนนที่ให้</th>
+      </tr>
+    </thead>
+    <tbody id="kpi-score-body"></tbody>
+  </table>
+</div>
+
+<!-- ส่วนที่ 3 ผลการประเมินรายรอบ -->
+<div class="card" id="eval-card" style="display:none">
+  <div class="sec-head"><div class="sec-num">3</div><div class="sec-title">ผลการประเมินรายรอบ</div></div>
+  <div class="guide">
+    <div class="guide-title">📌 เกณฑ์การประเมิน</div>
+    <ol>
+      <li><strong>ดีเด่น</strong> ≥ 90 คะแนน | <strong>ดี</strong> 80–89 | <strong>พอใช้</strong> 70–79 | <strong>ต้องปรับปรุง</strong> &lt; 70</li>
+      <li>กรอกข้อเสนอแนะให้ชัดเจน เพื่อเป็นประโยชน์ต่อการพัฒนาบุคลากร</li>
+    </ol>
+  </div>
+  <table class="eval-tbl">
+    <thead><tr>
+      <th style="width:16%">รอบประเมิน</th>
+      <th style="width:15%">คะแนน</th>
+      <th style="width:32%">ระดับผลการปฏิบัติงาน</th>
+      <th>ข้อเสนอแนะ</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="round-cell">รอบที่ 1<br><small style="font-weight:400">(ต.ค.–มี.ค.)</small></td>
+        <td style="text-align:center;background:var(--yellow)"><input class="score-in" id="r1s" placeholder="......./100"></td>
+        <td>
+          <div class="chk-row">
+            <label class="chk-opt"><input type="radio" name="r1lv" value="ดีเด่น"> ดีเด่น (≥90)</label>
+            <label class="chk-opt"><input type="radio" name="r1lv" value="ดี"> ดี (80-89)</label>
+            <label class="chk-opt"><input type="radio" name="r1lv" value="พอใช้"> พอใช้ (70-79)</label>
+            <label class="chk-opt"><input type="radio" name="r1lv" value="ต้องปรับปรุง"> ต้องปรับปรุง (&lt;70)</label>
+          </div>
+        </td>
+        <td><textarea class="eval-note-in" id="r1n" placeholder="ข้อเสนอแนะ เช่น จุดเด่น จุดที่ต้องปรับปรุง..."></textarea></td>
+      </tr>
+      <tr>
+        <td class="round-cell">รอบที่ 2<br><small style="font-weight:400">(เม.ย.–ก.ย.)</small></td>
+        <td style="text-align:center;background:var(--yellow)"><input class="score-in" id="r2s" placeholder="......./100"></td>
+        <td>
+          <div class="chk-row">
+            <label class="chk-opt"><input type="radio" name="r2lv" value="ดีเด่น"> ดีเด่น (≥90)</label>
+            <label class="chk-opt"><input type="radio" name="r2lv" value="ดี"> ดี (80-89)</label>
+            <label class="chk-opt"><input type="radio" name="r2lv" value="พอใช้"> พอใช้ (70-79)</label>
+            <label class="chk-opt"><input type="radio" name="r2lv" value="ต้องปรับปรุง"> ต้องปรับปรุง (&lt;70)</label>
+          </div>
+        </td>
+        <td><textarea class="eval-note-in" id="r2n" placeholder="ข้อเสนอแนะ เช่น จุดเด่น จุดที่ต้องปรับปรุง..."></textarea></td>
+      </tr>
+      <tr class="avg-row">
+        <td class="round-cell" style="background:var(--light)">เฉลี่ยทั้งปี</td>
+        <td style="text-align:center;background:var(--yellow);font-weight:700"><input class="score-in" id="avgs" placeholder="......./100"></td>
+        <td colspan="2">
+          <div class="chk-row">
+            <span style="font-weight:700;font-size:13px">ระดับสุดท้าย:</span>
+            <label class="chk-opt"><input type="radio" name="avglv" value="ดีเด่น"> <strong>ดีเด่น</strong></label>
+            <label class="chk-opt"><input type="radio" name="avglv" value="ดี"> <strong>ดี</strong></label>
+            <label class="chk-opt"><input type="radio" name="avglv" value="พอใช้"> <strong>พอใช้</strong></label>
+            <label class="chk-opt"><input type="radio" name="avglv" value="ต้องปรับปรุง"> <strong>ต้องปรับปรุง</strong></label>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="actions">
+    <button class="btn-g" onclick="submitEval()">✅ บันทึกผลการประเมิน</button>
+    <button class="btn-o" onclick="resetForm()">🔄 ล้างข้อมูล</button>
+  </div>
+</div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbytPYaUuvmBI3vNePFUYhadYjirFyob9hwG7DgW2lKH8oEeeg7XwA2wfR8kBN5WVz6g/exec';
+
+// รายชื่อบุคลากรทั้งหมด 55 คน
+const ALL_STAFF = [
+  {name:"ผู้ช่วยศาสตราจารย์ธนันต์นิภา ภัคศุขนิธิวัฒน์",type:"สายวิชาการ"},
+  {name:"อาจารย์รัตนาภรณ์ พันธุ์โพธิ์",type:"สายวิชาการ"},
+  {name:"ผู้ช่วยศาสตราจารย์ศรีอุบล อินทร์แป้น",type:"สายวิชาการ"},
+  {name:"อาจารย์ชุมศรี ต้นเกตุ",type:"สายวิชาการ"},
+  {name:"อาจารย์สุพิน สุโข",type:"สายวิชาการ"},
+  {name:"ผู้ช่วยศาสตราจารย์ชนาธิป สันติวงศ์",type:"สายวิชาการ"},
+  {name:"อาจารย์นิภา สุทธิพันธ์",type:"สายวิชาการ"},
+  {name:"อาจารย์ ดร.กิติพงษ์ เรือนเพ็ชร",type:"สายวิชาการ"},
+  {name:"อาจารย์ชื่นชีพ งามจบ",type:"สายวิชาการ"},
+  {name:"อาจารย์ฐานิดา สมขันตี",type:"สายวิชาการ"},
+  {name:"อาจารย์สาวรจ ปลั่งกลาง",type:"สายวิชาการ"},
+  {name:"อาจารย์สุวรัตน์ ธีระสุต",type:"สายวิชาการ"},
+  {name:"อาจารย์ศิริลักษณ์ สุวรรณวงษ์",type:"สายวิชาการ"},
+  {name:"อาจารย์สุดา ทองทรัพย์",type:"สายวิชาการ"},
+  {name:"อาจารย์ธีรวัฒน์ พงศ์ภานุพัฒน์",type:"สายวิชาการ"},
+  {name:"อาจารย์นิตยา ธีรวิโรจน์",type:"สายวิชาการ"},
+  {name:"อาจารย์ดร.ฐพัชร์ คันศร",type:"สายวิชาการ"},
+  {name:"อาจารย์ ดร.ธัญญาสิริ ธันยสวัสดิ์",type:"สายวิชาการ"},
+  {name:"ผู้ช่วยศาสตราจารย์ศีตรา มยูขโชติ",type:"สายวิชาการ"},
+  {name:"อาจารย์เพ็ญพิศ นุกูลสวัสดิ์",type:"สายวิชาการ"},
+  {name:"อาจารย์กนกพร สุขอนันต์",type:"สายวิชาการ"},
+  {name:"อาจารย์อัญชุกร เจริญศิริ",type:"สายวิชาการ"},
+  {name:"อาจารย์นิยตา ประสงค์กูล",type:"สายวิชาการ"},
+  {name:"อาจารย์ณัฐพร คุณโน",type:"สายวิชาการ"},
+  {name:"อาจารย์จารินี คูณทวีพันธุ์",type:"สายวิชาการ"},
+  {name:"อาจารย์อรศรี สุวิมล",type:"สายวิชาการ"},
+  {name:"อาจารย์อัญชลี วงษ์ดี",type:"สายวิชาการ"},
+  {name:"อาจารย์ชญานิศ เขียวสด",type:"สายวิชาการ"},
+  {name:"อาจารย์นภาพร วิทยาประโคน",type:"สายวิชาการ"},
+  {name:"อาจารย์ปภาดา น้อยวงศ์",type:"สายวิชาการ"},
+  {name:"อาจารย์สายหยุด นพตลุง",type:"สายวิชาการ"},
+  {name:"อาจารย์ ดร.ศรีงามลักษณ์ ศรีปวริศร",type:"สายวิชาการ"},
+  {name:"อาจารย์สุดารัตน์ พุฒพิมพ์",type:"สายวิชาการ"},
+  {name:"อาจารย์สมจิตร วงศ์หอม",type:"สายวิชาการ"},
+  {name:"อาจารย์ ดร.เขมิกา ณภัทรเดชานนท์",type:"สายวิชาการ"},
+  {name:"อาจารย์ทิพย์นราภรณ์ สังข์สีแก้ว",type:"สายวิชาการ"},
+  {name:"อาจารย์ดวงจันทร์ กาละปัตย์",type:"สายวิชาการ"},
+  {name:"อาจารย์มาลีรัตน์ พวงวิภาต",type:"สายวิชาการ"},
+  {name:"อาจารย์บุหลัน เปลี่ยนไธสง",type:"สายวิชาการ"},
+  {name:"อาจารย์ปาจรีย์ สำราญจิตต์",type:"สายวิชาการ"},
+  {name:"อาจารย์ปิยะนุช บังเอิญ",type:"สายวิชาการ"},
+  {name:"อาจารย์ลำดวน บุญที",type:"สายวิชาการ"},
+  {name:"อาจารย์อภิชาติ สิริสมบัติ",type:"สายวิชาการ"},
+  {name:"อาจารย์อุษณีย์ สุขนิตย์",type:"สายวิชาการ"},
+  {name:"อาจารย์ยุวดี งอมสงัด",type:"สายวิชาการ"},
+  {name:"อาจารย์ปวีณา ทักษิณาเจนกิจ",type:"สายวิชาการ"},
+  {name:"นางจันทร์เพ็ญ สิงห์วงศ์",type:"สายสนับสนุน"},
+  {name:"นายอนุชา สิงห์มักหม้อ",type:"สายสนับสนุน"},
+  {name:"นางประสพสุข ซื่อตรง",type:"สายสนับสนุน"},
+  {name:"นางสาวรจนา ยืนสุข",type:"สายสนับสนุน"},
+  {name:"นางเพ็ญนภา สุภาวิตานันท์",type:"สายสนับสนุน"},
+  {name:"นางลักขณา ตั้งตระกูล",type:"สายสนับสนุน"},
+  {name:"นางสาวจมาภรณ์ โอษฐ์เจษฎา",type:"สายสนับสนุน"},
+  {name:"นางสาวสุมาลี คำเปล่ง",type:"สายสนับสนุน"},
+  {name:"นายเรวัต เกรยรัมย์",type:"สายสนับสนุน"},
+];
+
+const kpiDefs = {
+  academic:[
+    {no:'1',area:'การจัดการเรียนการสอน',wt:'60%'},
+    {no:'2',area:'การวิจัยและผลงานวิชาการ',wt:'20%'},
+    {no:'3',area:'Faculty Practice & บริการวิชาการ',wt:'10%'},
+    {no:'4',area:'การพัฒนาตนเอง',wt:'10%'},
+  ],
+  support:[
+    {no:'1',area:'การปฏิบัติงานตามหน้าที่',wt:'60%'},
+    {no:'2',area:'การพัฒนาระบบและกระบวนการทำงาน',wt:'20%'},
+    {no:'3',area:'การสนับสนุนงานวิจัยและบริการวิชาการ',wt:'10%'},
+    {no:'4',area:'การพัฒนาตนเอง',wt:'10%'},
+  ]
+};
+
+let currentPA = null;
+
+function filterStaff() {
+  const q = document.getElementById('search-name').value.trim().toLowerCase();
+  const sel = document.getElementById('sel-staff');
+  sel.innerHTML = '<option value="">-- เลือกบุคลากร --</option>';
+  ALL_STAFF.filter(s => !q || s.name.toLowerCase().includes(q))
+    .forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = s.name + ' (' + s.type + ')';
+      sel.appendChild(opt);
+    });
+}
+
+function onSelectStaff() {
+  document.getElementById('staff-info').classList.remove('show');
+  document.getElementById('kpi-card').style.display = 'none';
+  document.getElementById('eval-card').style.display = 'none';
+  currentPA = null;
+}
+
+function setStatus(type, msg) {
+  const bar = document.getElementById('status-bar');
+  bar.className = 'status-bar ' + type;
+  bar.innerHTML = (type==='loading'?'⏳ ':'type'==='success'?'✅ ':'❌ ') + msg;
+}
+
+function loadPAData() {
+  const name = document.getElementById('sel-staff').value;
+  const year = document.getElementById('sel-year').value;
+  if (!name) { toast('⚠️ กรุณาเลือกชื่อบุคลากรก่อน'); return; }
+
+  setStatus('loading', 'กำลังโหลดข้อมูล PA...');
+
+  // ดึงข้อมูลจาก Apps Script
+  const url = SHEET_URL + '?action=getPAData&name=' + encodeURIComponent(name) + '&year=' + year;
+  fetch(url, { method:'GET', mode:'cors' })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === 'success' && res.data) {
+        currentPA = res.data;
+        showPAInfo(res.data);
+        document.getElementById('status-bar').className = 'status-bar';
+        toast('✅ โหลดข้อมูล PA เรียบร้อยแล้ว');
+      } else {
+        // ถ้าไม่มีข้อมูลใน Sheet ให้ใช้ชื่อที่เลือกไว้
+        const staffInfo = ALL_STAFF.find(s => s.name === name);
+        currentPA = { name, type: staffInfo?.type||'', position:'', branch:'', year, kpi1:'', kpi2:'', kpi3:'', kpi4:'', okrCount:0 };
+        showPAInfo(currentPA);
+        document.getElementById('status-bar').className = 'status-bar';
+        toast('ℹ️ ไม่พบข้อมูล PA ใน Sheet — กรอกคะแนนได้เลย');
+      }
+    })
+    .catch(() => {
+      // CORS อาจไม่ผ่าน — ใช้ข้อมูลเบื้องต้นจากรายชื่อแทน
+      const staffInfo = ALL_STAFF.find(s => s.name === name);
+      currentPA = { name, type: staffInfo?.type||'', position:'', branch:'', year, kpi1:'', kpi2:'', kpi3:'', kpi4:'', okrCount:0 };
+      showPAInfo(currentPA);
+      document.getElementById('status-bar').className = 'status-bar';
+      toast('ℹ️ โหลดด้วยข้อมูลพื้นฐาน — กรอกคะแนนได้เลย');
+    });
+}
+
+function showPAInfo(pa) {
+  document.getElementById('info-name').textContent = pa.name || '—';
+  document.getElementById('info-pos').textContent = pa.position || '—';
+  document.getElementById('info-branch').textContent = pa.branch || '—';
+  document.getElementById('info-type').textContent = pa.type || '—';
+  document.getElementById('info-year').textContent = pa.year || '—';
+  document.getElementById('info-okr').textContent = pa.okrCount ? pa.okrCount + ' รายการ' : '—';
+  document.getElementById('staff-info').classList.add('show');
+
+  // สร้าง KPI score table
+  const type = pa.type === 'สายวิชาการ' ? 'academic' : 'support';
+  const defs = kpiDefs[type];
+  const kpiValues = [pa.kpi1, pa.kpi2, pa.kpi3, pa.kpi4];
+
+  document.getElementById('kpi-score-body').innerHTML = defs.map((d, i) => `
+    <tr>
+      <td style="text-align:center;font-weight:700;background:#f0f4fb">${d.no}</td>
+      <td class="area-cell">${d.area}</td>
+      <td class="wt-cell">${d.wt}</td>
+      <td>${kpiValues[i] ? '<div class="kpi-preview">'+kpiValues[i]+'</div>' : '<span style="color:var(--muted);font-size:13px">ไม่มีข้อมูล KPI</span>'}</td>
+      <td class="score-cell"><input class="kpi-score-in" id="kscore-${d.no}" placeholder="0–${parseInt(d.wt)}" type="number" min="0" max="${parseInt(d.wt)}"></td>
+    </tr>`).join('') + `
+    <tr class="total-row">
+      <td colspan="3">รวม</td>
+      <td style="text-align:right;padding-right:8px">คะแนนรวม KPI:</td>
+      <td style="background:var(--yellow);font-weight:700;color:#B71C1C;text-align:center" id="kpi-total">0 / 100</td>
+    </tr>`;
+
+  // คำนวณ KPI รวมอัตโนมัติ
+  defs.forEach(d => {
+    document.getElementById('kscore-'+d.no)?.addEventListener('input', updateKPITotal);
+  });
+
+  document.getElementById('kpi-card').style.display = 'block';
+  document.getElementById('eval-card').style.display = 'block';
+}
+
+function updateKPITotal() {
+  const type = currentPA?.type === 'สายวิชาการ' ? 'academic' : 'support';
+  const defs = kpiDefs[type];
+  let total = 0;
+  defs.forEach(d => {
+    const v = parseFloat(document.getElementById('kscore-'+d.no)?.value) || 0;
+    total += v;
+  });
+  const el = document.getElementById('kpi-total');
+  if (el) {
+    el.textContent = total.toFixed(1) + ' / 100';
+    el.style.color = total >= 90 ? '#1a6b3c' : total >= 80 ? '#1E4080' : total >= 70 ? '#e67e22' : '#e74c3c';
+  }
+}
+
+function submitEval() {
+  if (!currentPA) { toast('⚠️ กรุณาโหลดข้อมูล PA ก่อน'); return; }
+  const evalName = document.getElementById('eval-name').value.trim();
+  const evalRole = document.getElementById('eval-role').value.trim();
+  if (!evalName) { toast('⚠️ กรุณากรอกชื่อผู้ประเมิน'); return; }
+
+  const type = currentPA.type === 'สายวิชาการ' ? 'academic' : 'support';
+  const defs = kpiDefs[type];
+  const kpiScores = defs.map(d => document.getElementById('kscore-'+d.no)?.value || '');
+
+  const data = {
+    formType: 'PA_EVAL',
+    staffName: currentPA.name,
+    year: currentPA.year,
+    evaluatorName: evalName,
+    evaluatorRole: evalRole,
+    kpiScores,
+    r1Score: document.getElementById('r1s').value,
+    r1Level: document.querySelector('input[name="r1lv"]:checked')?.value || '',
+    r1Note: document.getElementById('r1n').value,
+    r2Score: document.getElementById('r2s').value,
+    r2Level: document.querySelector('input[name="r2lv"]:checked')?.value || '',
+    r2Note: document.getElementById('r2n').value,
+    avgScore: document.getElementById('avgs').value,
+    avgLevel: document.querySelector('input[name="avglv"]:checked')?.value || '',
+  };
+
+  const btn = document.querySelector('.btn-g');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...'; }
+
+  fetch(SHEET_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  }).then(() => {
+    toast('✅ บันทึกผลการประเมินเรียบร้อยแล้ว!');
+    if (btn) { btn.disabled = false; btn.textContent = '✅ บันทึกผลการประเมิน'; }
+  }).catch(() => {
+    toast('❌ เกิดข้อผิดพลาด กรุณาลองใหม่');
+    if (btn) { btn.disabled = false; btn.textContent = '✅ บันทึกผลการประเมิน'; }
+  });
+}
+
+function resetForm() {
+  if (!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
+  ['r1s','r1n','r2s','r2n','avgs'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
+  ['r1lv','r2lv','avglv'].forEach(n => document.querySelectorAll(`input[name="${n}"]`).forEach(r => r.checked=false));
+  document.getElementById('staff-info').classList.remove('show');
+  document.getElementById('kpi-card').style.display = 'none';
+  document.getElementById('eval-card').style.display = 'none';
+  document.getElementById('sel-staff').value = '';
+  document.getElementById('search-name').value = '';
+  currentPA = null;
+  toast('🔄 ล้างข้อมูลเรียบร้อยแล้ว');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Init
+filterStaff();
+</script>
+</body>
+</html>
